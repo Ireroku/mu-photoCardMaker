@@ -1,0 +1,354 @@
+/* フォームの作り方の画面。クラス名は tutorial- と gf-（フォームの見本）で始める */
+
+.tutorial {
+  --tutorial-accent: #2f6f8f;
+  --tutorial-border: #c9ced6;
+  --tutorial-muted: #5a6270;
+  --tutorial-surface: #f4f6f8;
+  --gf-bg: #eef0f3;
+  --gf-card: #ffffff;
+  --gf-text: #202124;
+  --gf-muted: #6b7078;
+  --gf-accent: #3b7fa6;
+  --gf-required: #c5372c;
+
+  /* 暗い配色にはまだ対応していないので、明るい配色に固定する */
+  color-scheme: light;
+  color: #1f2328;
+  background: #fff;
+  inline-size: 100%;
+  container-type: inline-size;
+  display: grid;
+  gap: 1rem;
+  line-height: 1.7;
+}
+
+.tutorial h2,
+.tutorial h3,
+.tutorial h4 {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.tutorial-count {
+  margin: 0;
+}
+
+.tutorial :where(button) {
+  min-block-size: 2.25rem;
+  min-inline-size: 2.25rem;
+  padding: 0.25rem 0.9rem;
+  border: 1px solid var(--tutorial-border);
+  border-radius: 0.4rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tutorial :where(button):hover:not([aria-disabled="true"]) {
+  background: var(--tutorial-surface);
+}
+
+.tutorial :where(button):focus-visible,
+.tutorial-step-heading:focus-visible {
+  outline: 3px solid var(--tutorial-accent);
+  outline-offset: 2px;
+}
+
+.tutorial :where(button)[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 手順の一覧 */
+.tutorial-steplist ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tutorial-steplist button {
+  text-align: start;
+}
+
+.tutorial-steplist button[aria-current="step"] {
+  border-color: var(--tutorial-accent);
+  background: var(--tutorial-accent);
+  color: #fff;
+  font-weight: bold;
+}
+
+.tutorial-steplist button[aria-current="step"] /* 手順の本文と見本。狭い画面では縦、広い画面では横に並べる */
+.tutorial-body {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@container (min-width: 48rem) {
+  .tutorial-body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+  }
+}
+
+.tutorial-step {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tutorial-step-heading {
+  scroll-margin-block-start: 1rem;
+}
+
+.tutorial-step h4 {
+  margin-block-start: 0.5rem;
+}
+
+.tutorial-step p {
+  margin: 0;
+}
+
+.tutorial-instructions {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding-inline-start: 1.5rem;
+}
+
+.tutorial-warning {
+  padding: 0.5rem 0.75rem;
+  border-inline-start: 4px solid #b26a00;
+  background: #fff6e5;
+}
+
+.tutorial-note {
+  color: var(--tutorial-muted);
+  font-size: 0.9rem;
+}
+
+/* コピーできる文 */
+.tutorial-copyable {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--tutorial-border);
+  border-radius: 0.4rem;
+  background: var(--tutorial-surface);
+}
+
+.tutorial-copyable-text {
+  flex: 1 1 12rem;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  user-select: all;
+}
+
+.tutorial-copy-button[data-status="copied"]::before {
+  content: "✓ " / "";
+}
+
+/* 読み上げのため、空のときも display: none にはしない */
+.tutorial-copy-status {
+  flex-basis: 100%;
+  font-size: 0.9rem;
+}
+
+.tutorial-copy-status[data-status="copied"] {
+  color: #1f6b3a;
+}
+
+.tutorial-copy-status[data-status="failed"] {
+  color: var(--gf-required);
+}
+
+/* 前へ・次へ */
+.tutorial-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tutorial-nav button {
+  min-inline-size: 6rem;
+}
+
+/* Google フォームの見本（ざっくりした再現） */
+.tutorial-preview {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: var(--gf-bg);
+}
+
+.tutorial-preview figcaption {
+  color: var(--tutorial-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.gf-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #dadce0;
+  border-radius: 0.5rem;
+  background: var(--gf-card);
+  color: var(--gf-text);
+  font-size: 0.95rem;
+}
+
+/* 選択中のカードは左に色の帯が出る */
+.gf-card--active {
+  border-inline-start: 6px solid var(--gf-accent);
+  padding-inline-start: calc(1.25rem - 5px);
+}
+
+.gf-card--header {
+  border-block-start: 8px solid var(--gf-accent);
+}
+
+.gf-card p {
+  margin: 0;
+}
+
+.gf-header-title {
+  padding-block-end: 0.25rem;
+  border-block-end: 1px solid #dadce0;
+  font-size: 1.5rem;
+}
+
+.gf-header-desc,
+.gf-question-desc,
+.gf-answer {
+  color: var(--gf-muted);
+  font-size: 0.85rem;
+}
+
+.gf-question-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.gf-question-title {
+  flex: 1 1 8rem;
+  padding: 0.4rem 0.5rem;
+  background: #f1f3f4;
+  border-block-end: 1px solid var(--gf-muted);
+  overflow-wrap: anywhere;
+}
+
+.gf-required {
+  color: var(--gf-required);
+}
+
+.gf-type-select {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #dadce0;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.gf-type-select::after {
+  content: " ▾" / "";
+}
+
+.gf-answer {
+  inline-size: 60%;
+  padding-block-end: 0.25rem;
+  border-block-end: 1px dotted var(--gf-muted);
+}
+
+.gf-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-block-start: 0.5rem;
+  border-block-start: 1px solid #dadce0;
+  font-size: 0.85rem;
+}
+
+/* 必須のスイッチ（見た目だけ）。色に頼らず ON / OFF の文字と枠でも分かるようにする */
+.gf-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  inline-size: 2.8rem;
+  block-size: 1.1rem;
+  padding-inline: 0.3rem;
+  border: 1px solid #9aa0a6;
+  border-radius: 1rem;
+  background: #e3e5e8;
+  font-size: 0.6rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.gf-switch::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0.1rem;
+  translate: 0 -50%;
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  border: 1px solid #9aa0a6;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.gf-switch--on {
+  justify-content: flex-start;
+  border-color: var(--gf-accent);
+  background: color-mix(in srgb, var(--gf-accent) 30%, #fff);
+}
+
+.gf-switch--on::after {
+  inset-inline-start: auto;
+  inset-inline-end: 0.1rem;
+  border-color: var(--gf-accent);
+  background: var(--gf-accent);
+}
+
+.gf-more {
+  padding-inline: 0.25rem;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (forced-colors: active) {
+  .gf-card--active {
+    border-inline-start-color: Highlight;
+  }
+
+  .gf-switch--on::after {
+    background: CanvasText;
+  }
+}
