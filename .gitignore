@@ -1,0 +1,40 @@
+# Agents
+/.claude/
+/docs/AGENTS/
+
+# 個人情報を含む元資料（説明の README だけ追跡する）
+/reference/*
+!/reference/README.md
+
+# フォームの回答 CSV（個人情報を含む）。テスト用のダミーは fixtures/ に置けば追跡される
+*.csv
+!**/fixtures/**/*.csv
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules
+
+# Vite / build artifacts
+dist
+dist-ssr
+stats.html
+coverage
+
+# Environment variables (may contain secrets)
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.sw?
+
+# macOS
+__MACOSX
+.DS_Store
