@@ -64,6 +64,8 @@ const textItemSchema = z.strictObject({
   kind: z.literal("text"),
   field: z.string().min(1),
   size_pt: positiveUpTo(200),
+  /** 長くて収まらないとき、この大きさまで縮める。省略時は size_pt の 60%（print/fit.ts の resolveMinPt） */
+  min_size_pt: positiveUpTo(200).optional(),
   bold: z.boolean().optional(),
 });
 
@@ -145,6 +147,12 @@ export const templateSchema = baseTemplateSchema.check((payload) => {
     if (entry.kind !== "section") return;
     entry.items.forEach((item, j) => {
       if (item.kind !== "text") return;
+      if (item.min_size_pt !== undefined && item.min_size_pt > item.size_pt) {
+        report(
+          ["layout", i, "items", j, "min_size_pt"],
+          `size_pt（${item.size_pt}）以下にしてください`,
+        );
+      }
       const path = ["layout", i, "items", j, "field"];
       const type = typeByKey.get(item.field);
       if (type === undefined) {

@@ -66,11 +66,26 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 | 知りたいこと | 読む場所 |
 |---|---|
 | 使い方、開発環境の準備、ビルド、テンプレート JSON の仕様、ディレクトリ構成 | [README.md](./README.md) |
+| 画面の状態（テンプレート・CSV・列の対応・並び順）と、そこから求める札 | [src/app/state.ts](./src/app/state.ts)、[src/app/derive.ts](./src/app/derive.ts) |
+| CSV の読み込みと列の対応付け（同じ見出しの列は左から空でない値を使う） | [src/csv/](./src/csv/) |
+| 文字の自動縮小（計算は `fit.ts`・`autoFit.ts`、測るのは `measure.ts`・`useCardFits.ts`） | [src/print/](./src/print/) |
+| テンプレート JSON の型と検証 | [src/template/schema.ts](./src/template/schema.ts) |
 | 再現の目標にする元のテンプレート | [reference/](./reference/README.md)（中身は Git で追跡しない） |
 
 ## コマンド
 
-実装の段階で追記する。
+変更を終えたら、次がすべて通ることを確かめる。
+
+```sh
+npm run typecheck
+npm run lint
+npm test
+npm run build
+npm run build:single
+npm run format:check   # 直すときは npm run format
+```
+
+画面の確認は `npm run dev`（http://localhost:5173）。テスト用の CSV は `src/csv/fixtures/` にある。
 
 # RULES
 

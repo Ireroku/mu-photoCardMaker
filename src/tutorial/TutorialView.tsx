@@ -47,10 +47,7 @@ export function TutorialView({ fields }: TutorialViewProps) {
 
   return (
     <section className="tutorial" aria-labelledby="tutorial-title">
-      <h2 id="tutorial-title">Google フォームの作り方</h2>
-      <p className="tutorial-count">
-        フォームに追加する質問は全部で <strong>{fields.length}</strong> 個です。
-      </p>
+      <h3 id="tutorial-title">Google フォームの作り方</h3>
 
       <nav className="tutorial-steplist" aria-label="手順の一覧">
         <ol>
@@ -70,9 +67,9 @@ export function TutorialView({ fields }: TutorialViewProps) {
 
       <div className="tutorial-body">
         <div className="tutorial-step">
-          <h3 ref={headingRef} tabIndex={-1} className="tutorial-step-heading">
+          <h4 ref={headingRef} tabIndex={-1} className="tutorial-step-heading">
             {stepShortTitle(step)}
-          </h3>
+          </h4>
           <StepContent key={index} step={step} />
         </div>
         <StepPreview step={step} />
@@ -102,8 +99,11 @@ function StepContent({ step }: { step: TutorialStep }) {
       return (
         <Steps>
           <li>
-            ブラウザで Google
-            フォーム（forms.google.com）を開き、「空白のフォーム」を選んで新しいフォームを作ります。
+            ブラウザで{" "}
+            <a href="https://forms.google.com/" target="_blank" rel="noopener noreferrer">
+              Google フォーム（forms.google.com）
+            </a>
+            を開き、「空白のフォーム」を選んで新しいフォームを作ります。
           </li>
           <li>
             最初のカードの「無題のフォーム」と書かれたところをクリックして、フォームのタイトルを入力します。タイトルは自由に決めてかまいません。
@@ -180,7 +180,7 @@ function StepContent({ step }: { step: TutorialStep }) {
     case "csv":
       return (
         <>
-          <h4>ふつうのやり方</h4>
+          <h5>ふつうのやり方</h5>
           <Steps>
             <li>フォームの上にある「回答」タブを開きます。</li>
             <li>「⋮」（その他のオプション）を押し、「回答をダウンロード（.csv）」を選びます。</li>
@@ -189,7 +189,7 @@ function StepContent({ step }: { step: TutorialStep }) {
               ファイルを使います。
             </li>
           </Steps>
-          <h4>うまくいかないとき（スプレッドシートを使うやり方）</h4>
+          <h5>うまくいかないとき（スプレッドシートを使うやり方）</h5>
           <Steps>
             <li>
               「回答」タブで「スプレッドシートにリンク」を押します（「回答の送信先を選択」と表示されることもあります）。

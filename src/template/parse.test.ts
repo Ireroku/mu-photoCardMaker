@@ -57,6 +57,26 @@ describe("parseTemplate", () => {
     expect(parseTemplate(modified((t) => t.layout[2].items.pop())).ok).toBe(true);
   });
 
+  it("min_size_pt を書ける", () => {
+    const result = parseTemplate(modified((t) => (t.layout[0].items[0].min_size_pt = 18)));
+    if (!result.ok) throw new Error(result.errors.join("\n"));
+    expect(result.template.layout[0]).toMatchObject({ items: [{ min_size_pt: 18 }] });
+  });
+
+  it("min_size_pt が size_pt より大きければ知らせる", () => {
+    const errors = errorsOf(modified((t) => (t.layout[0].items[0].min_size_pt = 30)));
+    expect(errors).toEqual([
+      "layout の 1 番目 → items の 1 番目 → min_size_pt: size_pt（24）以下にしてください",
+    ]);
+  });
+
+  it("min_size_pt が 0 以下なら知らせる", () => {
+    const errors = errorsOf(modified((t) => (t.layout[0].items[0].min_size_pt = 0)));
+    expect(errors).toEqual([
+      "layout の 1 番目 → items の 1 番目 → min_size_pt: 0 より大きくしてください",
+    ]);
+  });
+
   it("知らない kind は、場所と使える値を示す", () => {
     const errors = errorsOf(modified((t) => (t.layout[1].kind = "circle")));
     expect(errors).toEqual(['layout の 2 番目 → kind: "section"、"line" のいずれかにしてください']);

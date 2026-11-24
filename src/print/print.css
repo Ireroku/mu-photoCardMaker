@@ -9,6 +9,7 @@
  */
 
 .sheet {
+  position: relative;
   box-sizing: border-box;
   width: var(--paper-width);
   /* 用紙ぴったりだと、丸めの誤差で白紙のページが増えるブラウザがあるので、わずかに低くする */
@@ -21,6 +22,22 @@
   /* page-break-after は break-after に対応していない古い Safari 向け */
   page-break-after: always;
   break-after: page;
+}
+
+/* 見本を印刷したときに、各ページの右上に出す印。本物の札と取り違えないようにする */
+.sheet-mark {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 1mm;
+  inset-inline-end: 2mm;
+  margin: 0;
+  padding: 0 1.5mm;
+  font-size: 9pt;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #444;
+  background: white;
+  border: 0.5pt solid #444;
 }
 
 /* 最後のページの後ろに白紙を出さない */
@@ -37,6 +54,7 @@
 }
 
 .card {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -67,7 +85,7 @@
   overflow: hidden;
 }
 
-/* 1 行で表示し、はみ出した分は「…」にする（文字の自動縮小は段階4） */
+/* 1 行で表示する。自動縮小（useCardFits）でも収まらない分は「…」にする */
 .card-text {
   max-width: 100%;
   margin: 0;
@@ -95,6 +113,52 @@
   }
 
   .sheet {
-    box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  }
+
+  /* 文字が最小の大きさでも収まらないカード。画面だけの色で、印刷には出ない */
+  .card.overflow {
+    outline: 2px dashed #c62828;
+    outline-offset: -3px;
+    background: #fff3f2;
+  }
+
+  /* 警告の一覧から飛んできたカード（上の余白は、スクロールする側の scroll-padding で取る） */
+  .card:target {
+    outline: 3px solid #1a5fb4;
+    outline-offset: -3px;
+  }
+
+  /*
+   * カードに重ねる番号などの印。プレビューは zoom で縮めて表示するので、
+   * 文字の大きさを倍率で割り、縮めたあとでも読める大きさ（12px ほど）にする
+   */
+  .card-badge {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 2px;
+    inset-inline-start: 2px;
+    display: flex;
+    gap: 0.3em;
+    font-family: system-ui, sans-serif;
+    font-size: calc(12px / var(--preview-scale, 1));
+    line-height: 1.4;
+  }
+
+  .card-badge > * {
+    padding: 0 0.4em;
+    color: #fff;
+    background: #5a6270;
+    border-radius: 0.3em;
+  }
+
+  .card-badge .card-badge-warning {
+    background: #c62828;
+  }
+}
+
+@media print {
+  .card-badge {
+    display: none;
   }
 }

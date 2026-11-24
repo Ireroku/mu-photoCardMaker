@@ -19,7 +19,7 @@
     {
       "kind": "section",
       "items": [
-        { "kind": "text", "field": "author", "size_pt": 20, "bold": true },
+        { "kind": "text", "field": "author", "size_pt": 16, "bold": true },
         { "kind": "text", "field": "place", "size_pt": 11 },
         { "kind": "text", "field": "camera", "size_pt": 11 }
       ]

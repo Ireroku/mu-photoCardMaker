@@ -1,113 +1,667 @@
-/* 画面全体（操作部分とプレビューの背景）。印刷するページの見た目は print/print.css */
+/* 画面全体（手順の欄とプレビューの背景）。印刷するページの見た目は print/print.css */
 
 :root {
   --ui-text: #1f1f1f;
   --ui-muted: #555;
   --ui-surface: #fff;
-  --ui-backdrop: #8a8a8a;
+  --ui-border: #c9ced6;
+  --ui-backdrop: #e6e8eb;
   --ui-accent: #1a5fb4;
+  --ui-done: #2e7d32;
   --ui-error-bg: #fdecea;
   --ui-error-text: #8a1c12;
+  --ui-warning-bg: #fff6e0;
+  --ui-warning-text: #6b4a00;
+  /* 暗い配色にはまだ対応していないので、明るい配色に固定する */
+  color-scheme: light;
   font-family: system-ui, sans-serif;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--ui-text);
 }
 
 /* ページが増えてスクロールバーが出ても幅が変わらず、プレビューの縮小の倍率が揺れないようにする */
 html {
   scrollbar-gutter: stable;
+  /* 「収まりません」の一覧から札へ飛んだとき、上に貼り付いたプレビューの見出しに隠れないようにする */
+  scroll-padding-block-start: 9rem;
 }
 
 body {
   margin: 0;
-  background: var(--ui-backdrop);
-}
-
-.controls {
-  padding: 12px 16px;
   background: var(--ui-surface);
-  border-bottom: 1px solid #ccc;
 }
 
-.controls h1 {
-  margin: 0 0 8px;
-  font-size: 1.25rem;
-}
-
-.controls-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.controls button {
-  padding: 6px 14px;
+/* ボタンと入力欄の共通の見た目（チュートリアルの中は tutorial.css が決める） */
+:where(.app-header, .steps, .preview-pane, .print-dialog) :where(button, select, input) {
   font: inherit;
-  color: var(--ui-text);
+  color: inherit;
+}
+
+:where(.steps, .print-dialog) button:not(.link, .tutorial *) {
+  min-block-size: 2.25rem;
+  padding: 0.3rem 1rem;
   cursor: pointer;
   background: var(--ui-surface);
   border: 1px solid #999;
   border-radius: 6px;
 }
 
-.controls button.primary {
+:where(.steps, .print-dialog) button.primary {
+  font-weight: 700;
   color: white;
   background: var(--ui-accent);
   border-color: var(--ui-accent);
 }
 
-.controls button:focus-visible {
+:where(.steps, .print-dialog) button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+:where(.steps, .preview-pane, .print-dialog) :is(button, select, input, a, summary):focus-visible {
   outline: 2px solid var(--ui-accent);
   outline-offset: 2px;
 }
 
-.controls-summary,
-.controls-hint {
-  margin: 8px 0 0;
-  font-size: 0.875rem;
+button.link {
+  padding: 0;
+  color: var(--ui-accent);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: 0;
 }
 
-.controls-hint {
-  color: var(--ui-muted);
-}
-
-.errors {
-  margin-top: 8px;
-  padding: 8px 12px;
-  color: var(--ui-error-text);
-  background: var(--ui-error-bg);
+select {
+  max-inline-size: 100%;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid #999;
   border-radius: 6px;
 }
 
-.errors p {
+.note {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+/* 見出し */
+.app-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.app-header h1 {
   margin: 0;
+  font-size: 1.125rem;
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+/* 手順とプレビューの 2 段組み。幅が狭いときは縦に並べる */
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media screen and (min-width: 64rem) {
+  .workspace {
+    grid-template-columns: minmax(26rem, 38rem) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .preview-pane {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100dvh;
+    overflow-y: auto;
+    scroll-padding-block-start: 9rem;
+  }
+
+  /* 2 段組みのときは、プレビューの中だけがスクロールするので、ページ側の余白は要らない */
+  html {
+    scroll-padding-block-start: 0;
+  }
+}
+
+.steps {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 16px;
+}
+
+/* 手順 1 つ分 */
+.step {
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+}
+
+.step > summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.step > summary::marker {
+  content: "";
+}
+
+.step > summary::after {
+  margin-inline-start: auto;
+  font-size: 0.8rem;
+  color: var(--ui-muted);
+  content: "開く ▾";
+}
+
+.step[open] > summary::after {
+  content: "閉じる ▴";
+}
+
+.step-number {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  background: var(--ui-accent);
+  border-radius: 50%;
+}
+
+.step[data-done] .step-number {
+  background: var(--ui-done);
+}
+
+.step-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.step-status {
+  overflow: hidden;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.step-body {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 0 14px 14px;
+}
+
+.step-body > * {
+  max-inline-size: 100%;
+}
+
+.next-step {
+  margin-block-start: 8px;
+}
+
+/* ② CSV を落とす場所 */
+.dropzone {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding: 20px 12px;
+  text-align: center;
+  background: #f6f8fb;
+  border: 2px dashed var(--ui-border);
+  border-radius: 8px;
+}
+
+.dropzone p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+.dropzone[data-over],
+.preview-pane[data-over] {
+  background: #e3eefc;
+  border-color: var(--ui-accent);
+}
+
+.dropzone .primary {
+  padding-inline: 2rem;
+  font-size: 1.05rem;
+}
+
+.loaded {
+  margin: 0;
+}
+
+/* 警告とエラー。何が起きたかと、どうすればよいかを書く */
+.message {
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.message p {
+  margin: 0;
+}
+
+.message p + p {
+  margin-block-start: 4px;
+}
+
+.message.error {
+  color: var(--ui-error-text);
+  background: var(--ui-error-bg);
+}
+
+.message.error > p:first-child {
   font-weight: 700;
 }
 
-.errors ul {
+.message.warning {
+  color: var(--ui-warning-text);
+  background: var(--ui-warning-bg);
+}
+
+.message ul {
   margin: 4px 0 0;
-  padding-left: 1.25em;
+  padding-inline-start: 1.25em;
+}
+
+/* 列の対応 */
+.mapping-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.mapping {
+  inline-size: 100%;
+}
+
+.mapping p {
+  margin: 0 0 6px;
+}
+
+.mapping table {
+  inline-size: 100%;
+  margin-block-end: 6px;
+  border-collapse: collapse;
+}
+
+.mapping th,
+.mapping td {
+  padding: 6px 8px 6px 0;
+  text-align: start;
+  vertical-align: top;
+  border-block-end: 1px solid #e3e5e8;
+}
+
+.mapping tbody th {
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.mapping select {
+  inline-size: 100%;
+}
+
+.mapping tr[data-missing] th,
+.mapping tr[data-missing] td {
+  background: var(--ui-error-bg);
+}
+
+.mapping tr[data-missing] select {
+  border: 2px solid var(--ui-error-text);
+}
+
+.required {
+  margin-inline-start: 6px;
+  padding: 0 4px;
+  font-size: 0.75rem;
+  color: var(--ui-error-text);
+  border: 1px solid currentcolor;
+  border-radius: 4px;
+}
+
+.field-error {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--ui-error-text);
+}
+
+/* ③ 並び順 */
+.order-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  align-items: center;
+}
+
+.order-list {
+  box-sizing: border-box;
+  inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-list > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(8rem, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0;
+  border-block-end: 1px solid #e3e5e8;
+}
+
+.order-list > li:has(button:focus-visible) {
+  background: #f0f5fc;
+}
+
+/* 落とす場所を示す線 */
+.order-list > li[data-drop-before]::before,
+.order-list > .order-drop-end::before {
+  position: absolute;
+  inset-block-start: -2px;
+  inset-inline: 0;
+  block-size: 3px;
+  content: "";
+  background: var(--ui-accent);
+  border-radius: 2px;
+}
+
+.order-list > .order-drop-end {
+  block-size: 4px;
+  border: 0;
+}
+
+.order-list > li[data-lifted] {
+  background: #f0f5fc;
+  opacity: 0.6;
+}
+
+.order-handle {
+  padding: 0 4px;
+  font-size: 1.25rem;
+  color: var(--ui-muted);
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  /* つまみの上だけ、タッチでのスクロールを止めてドラッグに使う */
+  touch-action: none;
+}
+
+.order-list[data-dragging],
+.order-list[data-dragging] * {
+  cursor: grabbing;
+}
+
+.order-number {
+  min-inline-size: 2ch;
+  font-variant-numeric: tabular-nums;
+  color: var(--ui-muted);
+  text-align: end;
+}
+
+.order-text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  min-inline-size: 0;
+}
+
+.order-title {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-sub {
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+.order-warning {
+  padding: 0 6px;
+  font-size: 0.75rem;
+  color: white;
+  white-space: nowrap;
+  background: #c62828;
+  border-radius: 4px;
+}
+
+.order-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: end;
+}
+
+.order-buttons button {
+  min-block-size: 2rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+:where(.steps, .print-dialog) button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ④ 印刷の調整 */
+.adjust {
+  inline-size: 100%;
+}
+
+.adjust > summary {
+  color: var(--ui-accent);
+  cursor: pointer;
+}
+
+.adjust-body {
+  display: grid;
+  gap: 8px;
+  padding-block-start: 8px;
+}
+
+.number-field {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.number-field .field-error {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.number-field label {
+  min-inline-size: 9em;
+}
+
+.number-field input {
+  inline-size: 6em;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid #999;
+  border-radius: 6px;
+}
+
+.checkbox {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* 印刷の前の確認 */
+.print-dialog {
+  max-inline-size: min(32rem, calc(100vw - 32px));
+  padding: 20px 24px;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 0.3);
+}
+
+/* ダイアログの中や背景をスクロールしても、後ろのページが動かないようにする */
+.print-dialog:modal {
+  overscroll-behavior: contain;
+}
+
+.print-dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgb(0 0 0 / 0.4);
+}
+
+.print-dialog h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.checklist {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-inline-start: 1.5em;
+}
+
+.dialog-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block-start: 16px;
+}
+
+/* 来年に引き継ぐ */
+.handover {
+  margin-block-start: 12px;
+  padding-block-start: 12px;
+  border-block-start: 1px solid var(--ui-border);
+}
+
+.handover h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.handover p {
+  margin: 4px 0 8px;
+  font-size: 0.875rem;
+}
+
+.handover .buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.handover details summary {
+  cursor: pointer;
+}
+
+/* プレビュー */
+.preview-pane {
+  box-sizing: border-box;
+  background: var(--ui-backdrop);
+  border: 2px solid transparent;
+}
+
+.preview-toolbar {
+  position: sticky;
+  z-index: 1;
+  inset-block-start: 0;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  background: rgb(230 232 235 / 0.95);
+}
+
+.preview-toolbar p {
+  margin: 0;
+}
+
+.overflow-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  margin-block-start: 4px;
+  color: var(--ui-error-text);
+}
+
+.overflow-summary ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.overflow-summary a {
+  color: inherit;
+  font-weight: 700;
+}
+
+.sample-band {
+  margin: 8px 16px 0;
+  padding: 4px 12px;
+  font-weight: 700;
+  color: #6b4a00;
+  text-align: center;
+  background: #ffe9a8;
+  border-radius: 6px;
 }
 
 .preview {
   padding: 16px;
 }
 
+/* 見本のあいだは札を薄くし、本物でないことを見た目で示す（画面だけ） */
+@media screen {
+  .preview[data-sample] .card > :not(.card-badge) {
+    opacity: 0.45;
+  }
+}
+
 .preview-empty {
-  width: fit-content;
+  inline-size: fit-content;
   margin: 0 auto;
   padding: 8px 16px;
-  color: var(--ui-text);
   background: var(--ui-surface);
   border-radius: 6px;
 }
 
 @media print {
-  .controls {
-    display: none;
+  .screen-only {
+    display: none !important;
   }
 
-  body {
+  .workspace {
+    display: block;
+  }
+
+  .preview-pane {
+    border: 0;
+  }
+
+  body,
+  .preview-pane {
     background: white;
   }
 

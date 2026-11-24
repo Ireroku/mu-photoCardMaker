@@ -1,0 +1,138 @@
+// 手順④：印刷する。印刷の前に、印刷の画面で確かめる設定を短い一覧で見せる。
+// 余白と切り取り線の調整は「印刷がずれたとき」の中にしまっておく（既定のままでよい人が多いため）。
+
+import { useRef, type Dispatch } from "react";
+import { sheetGeometry } from "../print/geometry";
+import type { Template } from "../template/schema";
+import { NumberField } from "./NumberField";
+import { adjustTemplate, type AppAction, type TemplateAdjustment } from "./state";
+
+type PrintStepProps = {
+  template: Template;
+  isSample: boolean;
+  savedBorderPt: number;
+  cardCount: number;
+  /** 文字が収まらない札の数 */
+  overflowCount: number;
+  /** 文字の自動縮小が今の設定で測り終わっている */
+  fitsReady: boolean;
+  dispatch: Dispatch<AppAction>;
+};
+
+const TOO_SMALL = "この値だと札が小さくなりすぎます。";
+
+export function PrintStep(props: PrintStepProps) {
+  const { template, isSample, savedBorderPt, cardCount, overflowCount, fitsReady, dispatch } =
+    props;
+  const dialog = useRef<HTMLDialogElement>(null);
+  const { card } = sheetGeometry(template);
+  const cutLines = template.card.border_pt > 0;
+
+  /** テンプレートとして使える値なら反映し、使えなければ理由を返す */
+  const tryAdjust = (change: TemplateAdjustment, action: AppAction): string | null => {
+    if (adjustTemplate(template, change) === null) return TOO_SMALL;
+    dispatch(action);
+    return null;
+  };
+
+  async function onClose() {
+    const element = dialog.current;
+    if (!element) return;
+    const choice = element.returnValue;
+    // Esc で閉じたときは値が入らず、ブラウザによっては前の値が残るので、毎回空に戻す
+    element.returnValue = "";
+    if (choice !== "print") return;
+    // フォントの読み込みが終わる前に印刷すると、別のフォントで出ることがある
+    await document.fonts.ready;
+    window.print();
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        className={isSample ? undefined : "primary"}
+        disabled={cardCount === 0}
+        onClick={() => dialog.current?.showModal()}
+      >
+        {isSample ? "見本を印刷 / PDF に保存" : "印刷 / PDF に保存"}
+      </button>
+      {cardCount === 0 && <p className="note">札が 1 枚もないので印刷できません。</p>}
+
+      <details className="adjust">
+        <summary>印刷がずれたとき・切り取り線を変えたいとき</summary>
+        <div className="adjust-body">
+          <NumberField
+            label="外側の余白"
+            unit="mm"
+            value={template.page.margin_mm}
+            min={0}
+            max={50}
+            step={0.5}
+            onCommit={(mm) => tryAdjust({ margin_mm: mm }, { type: "marginChanged", mm })}
+          />
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={cutLines}
+              onChange={(event) =>
+                dispatch({ type: "cutLinesToggled", on: event.currentTarget.checked })
+              }
+            />
+            切り取り線を引く
+          </label>
+          <NumberField
+            label="切り取り線の太さ"
+            unit="pt"
+            value={cutLines ? template.card.border_pt : savedBorderPt}
+            min={0.1}
+            max={10}
+            step={0.1}
+            disabled={!cutLines}
+            onCommit={(pt) => tryAdjust({ border_pt: pt }, { type: "borderChanged", pt })}
+          />
+          <p className="note">
+            カード 1 枚は 約 {card.width.toFixed(1)} × {card.height.toFixed(1)} mm
+            です。ここで変えた値は、下の「来年に引き継ぐ」で保存するファイルにも入ります。
+          </p>
+        </div>
+      </details>
+
+      <dialog
+        ref={dialog}
+        className="print-dialog"
+        aria-labelledby="print-dialog-title"
+        onClose={onClose}
+      >
+        <h2 id="print-dialog-title">印刷の画面で、次の 3 つを確かめてください</h2>
+        {/*
+          未確認：項目名（倍率・余白など）と「余白：なし」が要るかどうかは、ブラウザ（Chrome / Safari / Edge）の
+          実際の印刷の画面ではまだ確かめていない。@page { margin: 0 } で余白が自動で効くなら、3 つ目は消せる
+        */}
+        <ol className="checklist">
+          <li>
+            <strong>送信先</strong>：プリンター、または「PDF に保存」
+          </li>
+          <li>
+            <strong>倍率</strong>：100%（「実際のサイズ」）
+          </li>
+          <li>
+            <strong>余白</strong>：「なし」
+          </li>
+        </ol>
+        {overflowCount > 0 && (
+          <p className="field-error">
+            {overflowCount} 枚の札で文字が収まらず、端が「…」で切れます。
+          </p>
+        )}
+        {isSample && <p className="note">今は見本の札です。各ページに「見本」と印刷されます。</p>}
+        <form method="dialog" className="dialog-buttons">
+          <button value="print" className="primary" disabled={!fitsReady} autoFocus>
+            {fitsReady ? "この設定で印刷する" : "文字の大きさを計算中…"}
+          </button>
+          <button value="">やめる</button>
+        </form>
+      </dialog>
+    </>
+  );
+}

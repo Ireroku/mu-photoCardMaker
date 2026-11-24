@@ -48,8 +48,3 @@ export function moveItem(order: readonly number[], from: number, to: number): nu
   next.splice(target, 0, moved!);
   return next;
 }
-
-/** 順番どおりに並べた配列を返す */
-export function applyOrder<T>(items: readonly T[], order: readonly number[]): T[] {
-  return order.map((i) => items[i]!);
-}

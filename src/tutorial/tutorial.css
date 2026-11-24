@@ -23,15 +23,11 @@
   line-height: 1.7;
 }
 
-.tutorial h2,
 .tutorial h3,
-.tutorial h4 {
+.tutorial h4,
+.tutorial h5 {
   margin: 0;
   line-height: 1.4;
-}
-
-.tutorial-count {
-  margin: 0;
 }
 
 .tutorial :where(button) {
@@ -104,7 +100,7 @@
   scroll-margin-block-start: 1rem;
 }
 
-.tutorial-step h4 {
+.tutorial-step h5 {
   margin-block-start: 0.5rem;
 }
 

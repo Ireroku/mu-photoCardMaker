@@ -31,11 +31,6 @@ export function measureTextMm(text: string, font: FontSpec, sizePt: number): num
   return ctx.measureText(text).width * MM_PER_PX;
 }
 
-/** fitFontSize の measure に渡す形にする */
-export function textMeasurer(text: string, font: FontSpec): (pt: number) => number {
-  return (pt) => measureTextMm(text, font, pt);
-}
-
 /**
  * 文字を描くのに要るフォントを読み込む。読み込めたら true。
  * @fontsource は文字の範囲ごとにファイルが分かれているので、実際に測る文字を text に渡すこと

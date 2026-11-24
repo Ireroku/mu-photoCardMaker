@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyOrder, identityOrder, moveItem, orderByKeys, parseOrderKey } from "./order";
+import { identityOrder, moveItem, orderByKeys, parseOrderKey } from "./order";
 
 describe("parseOrderKey", () => {
   it.each([
@@ -66,12 +66,9 @@ describe("moveItem", () => {
   });
 });
 
-describe("applyOrder", () => {
-  it("順番どおりに並べる", () => {
-    expect(applyOrder(["a", "b", "c"], [2, 0, 1])).toEqual(["c", "a", "b"]);
-  });
-
-  it("identityOrder なら元のまま", () => {
-    expect(applyOrder(["a", "b"], identityOrder(2))).toEqual(["a", "b"]);
+describe("identityOrder", () => {
+  it("読み込んだ順の番号を並べる", () => {
+    expect(identityOrder(3)).toEqual([0, 1, 2]);
+    expect(identityOrder(0)).toEqual([]);
   });
 });
