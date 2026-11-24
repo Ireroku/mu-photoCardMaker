@@ -32,24 +32,6 @@ jobs:
         with:
           path: dist
 
-  single-html:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-      - run: npm ci
-      - run: npm run build:single
-      - uses: actions/upload-artifact@v7
-        with:
-          # caption-board.html plus public/ files (font licenses)
-          name: caption-board-single-html
-          path: dist-single
-          if-no-files-found: error
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
