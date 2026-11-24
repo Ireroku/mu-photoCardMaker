@@ -1,0 +1,9 @@
+dist
+dist-single
+node_modules
+package-lock.json
+docs/AGENTS
+reference
+public/licenses
+# 文書は手で整える（表の桁揃えなどで差分が膨らむのを避ける）
+*.md

@@ -1,0 +1,100 @@
+/*
+ * 印刷するページとカード。寸法は mm と pt だけで書き、値は Sheets.tsx が CSS 変数で渡す。
+ *
+ * - @page の margin は 0 にし、余白は .sheet の padding で取る。
+ *   ブラウザの印刷ダイアログの余白設定やヘッダー・フッターに左右されず、画面のプレビューとも同じ形になるため
+ * - 隣り合うカードの罫線が二重（2 倍の太さ）にならないよう、各辺を 1 回だけ引く。
+ *   どのカードも右と下に引き、左端の列だけ左、上端の行だけ上にも引く（クラスは Sheets.tsx が付ける）。
+ *   最後のページの空いたマスにはカードを置かないので、線も出ない
+ */
+
+.sheet {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  /* 用紙ぴったりだと、丸めの誤差で白紙のページが増えるブラウザがあるので、わずかに低くする */
+  height: calc(var(--paper-height) - 0.5mm);
+  padding: var(--page-margin);
+  overflow: hidden;
+  background: white;
+  color: black;
+  break-inside: avoid;
+  /* page-break-after は break-after に対応していない古い Safari 向け */
+  page-break-after: always;
+  break-after: page;
+}
+
+/* 最後のページの後ろに白紙を出さない */
+.sheet:last-child {
+  page-break-after: auto;
+  break-after: auto;
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--grid-rows), minmax(0, 1fr));
+  height: 100%;
+}
+
+.card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--card-padding);
+  overflow: hidden;
+  border-right: var(--card-border) solid black;
+  border-bottom: var(--card-border) solid black;
+}
+
+.card.first-column {
+  border-left: var(--card-border) solid black;
+}
+
+.card.first-row {
+  border-top: var(--card-border) solid black;
+}
+
+/* 段は残りの高さを等分し、中身を上下左右の中央に寄せる */
+.card-section {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 1 行で表示し、はみ出した分は「…」にする（文字の自動縮小は段階4） */
+.card-text {
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-line {
+  flex: none;
+  align-self: center;
+  border-top-style: solid;
+  border-top-color: black;
+}
+
+@media screen {
+  /* --preview-scale は、外側の要素に usePreviewScale が入れる */
+  .sheets {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    zoom: var(--preview-scale, 1);
+  }
+
+  .sheet {
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+  }
+}
