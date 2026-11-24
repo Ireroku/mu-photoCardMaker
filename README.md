@@ -45,11 +45,11 @@ npm run build:single  # 1 ファイル版のビルド（dist-single/caption-boar
 
 `main` に push すると、GitHub Actions がテストとビルドをして GitHub Pages に公開する。
 
-1 ファイル版を Releases に出すときは、`v` で始まるタグを付けて push する。GitHub Actions が 1 ファイル版を作り、フォントのライセンス文と一緒にそのタグの Release に添付する。
+1 ファイル版を Releases に出すときは、`v` と日付のタグ（`v年.月.日`）を付けて push する。同じ日に 2 回出すときは、`v2026.11.25.1` のように末尾に番号を足す。GitHub Actions が 1 ファイル版を作り、フォントのライセンス文と一緒にそのタグの Release に添付する。
 
 ```sh
-git tag v1.0.0
-git push origin v1.0.0
+git tag v2026.11.25
+git push origin v2026.11.25
 ```
 
 ## 📄 テンプレート JSON
