@@ -6,7 +6,23 @@
   --ui-surface: #fff;
   --ui-border: #c9ced6;
   --ui-backdrop: #e6e8eb;
-  --ui-accent: #1a5fb4;
+  --ui-accent: #4c5fd5;
+  /* 選んでいるもの・ドロップできる場所などを、アクセントの色でうっすら塗る */
+  --ui-accent-soft: rgb(76 95 213 / 0.08);
+  /* 画面の地の色と、その上に敷く点の方眼（画面だけ。印刷では白） */
+  --ui-page: #f1f2f4;
+  --ui-page-dots: radial-gradient(circle, rgb(0 0 0 / 0.09) 1px, transparent 1.5px) 0 0 / 20px 20px;
+  /* 手順の枠などのすりガラス */
+  --ui-glass: rgb(255 255 255 / 0.68);
+  --ui-glass-border: rgb(255 255 255 / 0.9);
+  --ui-glass-blur: blur(14px) saturate(1.3);
+  --ui-glass-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 6px 24px rgb(0 0 0 / 0.06);
+  /* 角の丸み。手順の枠などの大きいものと、ボタンなどの中の部品 */
+  --ui-radius: 10px;
+  --ui-radius-inner: 6px;
+  /* 開け閉めの動き（easeOutQuint：出だしが速く、最後はゆっくり止まる） */
+  --ui-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-duration: 0.35s;
   --ui-done: #2e7d32;
   --ui-error-bg: #fdecea;
   --ui-error-text: #8a1c12;
@@ -29,7 +45,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--ui-surface);
+  background:
+    var(--ui-page-dots) fixed,
+    var(--ui-page);
 }
 
 /* ボタンと入力欄の共通の見た目 */
@@ -44,7 +62,7 @@ body {
   cursor: pointer;
   background: var(--ui-surface);
   border: 1px solid #999;
-  border-radius: 6px;
+  border-radius: var(--ui-radius-inner);
 }
 
 :where(.steps, .print-dialog) button.primary {
@@ -77,7 +95,7 @@ select {
   max-inline-size: 100%;
   padding: 0.25rem 0.4rem;
   border: 1px solid #999;
-  border-radius: 6px;
+  border-radius: var(--ui-radius-inner);
 }
 
 /* 画面には出さず、読み上げだけに使う文 */
@@ -125,7 +143,9 @@ select {
   align-items: baseline;
   justify-content: space-between;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--ui-border);
+  background: rgb(255 255 255 / 0.5);
+  border-bottom: 1px solid rgb(0 0 0 / 0.06);
+  backdrop-filter: var(--ui-glass-blur);
 }
 
 /* 現在のバージョン（コミットのハッシュ）。目立たせない */
@@ -176,8 +196,11 @@ select {
 
 /* 手順 1 つ分 */
 .step {
-  border: 1px solid var(--ui-border);
-  border-radius: 8px;
+  background: var(--ui-glass);
+  border: 1px solid var(--ui-glass-border);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--ui-glass-shadow);
+  backdrop-filter: var(--ui-glass-blur);
 }
 
 .step > summary {
@@ -187,7 +210,7 @@ select {
   align-items: center;
   padding: 10px 14px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: var(--ui-radius);
 }
 
 .step > summary::marker {
@@ -215,8 +238,8 @@ select {
     block-size: 0;
     overflow: clip;
     transition:
-      block-size 0.25s ease,
-      content-visibility 0.25s allow-discrete;
+      block-size var(--ui-duration) var(--ui-ease),
+      content-visibility var(--ui-duration) allow-discrete;
   }
 
   .step[open]::details-content {
@@ -279,7 +302,7 @@ select {
   box-sizing: border-box;
   inline-size: 100%;
   padding: 8px 12px;
-  border-radius: 6px;
+  border-radius: var(--ui-radius-inner);
 }
 
 .message p {
@@ -318,12 +341,12 @@ select {
 /* プレビュー */
 .preview-pane {
   box-sizing: border-box;
-  background: var(--ui-backdrop);
+  background: rgb(0 0 0 / 0.035);
   border: 2px solid transparent;
 }
 
 .preview-pane[data-over] {
-  background: #e3eefc;
+  background: var(--ui-accent-soft);
   border-color: var(--ui-accent);
 }
 
@@ -333,7 +356,8 @@ select {
   inset-block-start: 0;
   padding: 8px 16px;
   font-size: 0.875rem;
-  background: rgb(230 232 235 / 0.95);
+  background: rgb(236 237 240 / 0.8);
+  backdrop-filter: var(--ui-glass-blur);
 }
 
 .preview-toolbar p {
@@ -376,7 +400,7 @@ select {
   color: var(--ui-warning-text);
   text-align: center;
   background: #ffe9a8;
-  border-radius: 6px;
+  border-radius: var(--ui-radius-inner);
 }
 
 .preview {
@@ -397,7 +421,7 @@ select {
   margin: 0 auto;
   padding: 8px 16px;
   background: var(--ui-surface);
-  border-radius: 6px;
+  border-radius: var(--ui-radius-inner);
 }
 
 @media print {

@@ -26,7 +26,7 @@
 }
 
 .order-list > li:has(button:focus-visible) {
-  background: #f0f5fc;
+  background: var(--ui-accent-soft);
 }
 
 /* 落とす場所を示す線 */
@@ -47,7 +47,7 @@
 }
 
 .order-list > li[data-lifted] {
-  background: #f0f5fc;
+  background: var(--ui-accent-soft);
   opacity: 0.6;
 }
 
