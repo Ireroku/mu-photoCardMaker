@@ -1,6 +1,7 @@
 // 手順①の各手順で、本文の上に出す Google フォームの画面の見本。
 // HTML/CSS でざっくり再現したもので、本物の画面とは細部が違ってよい。
 // 手順の文で同じ内容を説明しているので、見本は読み上げの対象から外す（aria-hidden）。
+// 見本は操作を終えたあとの画面を出す。利用者が自由に決める値は、例だと分かるよう斜体（Example）にする。
 
 import { GOOGLE_FORM_TYPES, type TutorialStep } from "./tutorialSteps";
 
@@ -17,7 +18,9 @@ function PreviewOf({ step }: { step: TutorialStep }) {
     case "intro":
       return (
         <div className="gf-card gf-card--header gf-card--active">
-          <p className="gf-header-title">無題のフォーム</p>
+          <p className="gf-header-title">
+            <Example>作品展 2026/11/11 提出フォーム</Example>
+          </p>
           <p className="gf-header-desc">フォームの説明</p>
         </div>
       );
@@ -52,10 +55,15 @@ function PreviewOf({ step }: { step: TutorialStep }) {
     }
     case "publish":
       return (
-        <div className="gf-toolbar">
-          <span className="gf-toolbar-icon">🔗</span>
-          <span className="gf-toolbar-button gf-highlight">公開</span>
-          <span className="gf-more">⋮</span>
+        <div className="gf-menu-wrap">
+          <div className="gf-toolbar">
+            <span className="gf-toolbar-icon gf-highlight">🔗</span>
+            <span className="gf-toolbar-button">公開済み</span>
+            <span className="gf-more">⋮</span>
+          </div>
+          <p className="gf-link">
+            <Example>https://forms.gle/AbCd1234</Example>
+          </p>
         </div>
       );
     case "csv":
@@ -69,6 +77,11 @@ function PreviewOf({ step }: { step: TutorialStep }) {
     case "nextYear":
       return <Menu items={["コピーを作成", "印刷", "削除"]} pick={0} />;
   }
+}
+
+/** 利用者が自由に決める値の例 */
+function Example({ children }: { children: string }) {
+  return <i className="gf-example">{children}</i>;
 }
 
 function Switch({ on }: { on: boolean }) {

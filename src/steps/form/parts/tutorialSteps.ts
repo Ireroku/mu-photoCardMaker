@@ -31,7 +31,6 @@ export type TutorialStep =
       kind: "question";
       /** 1 から数えた質問の番号 */
       number: number;
-      questionCount: number;
       fieldType: FieldType;
       /** フォームに貼り付ける質問文 */
       title: string;
@@ -46,16 +45,14 @@ export type TutorialStep =
 
 /**
  * fields から手順を並べる。
- * フォームを作る → 設定 → 質問ごと → 公開 → CSV の取り出し方 → 試しに回答 → 来年以降
+ * フォームを作る → 設定 → 質問ごと → 公開 → CSV の取り出し方 → 試しに回答 → 次の展示でも使うとき
  */
 export function buildTutorialSteps(fields: readonly Field[]): TutorialStep[] {
-  const questionCount = fields.length;
   const questions = fields.map((field, i): TutorialStep => {
     const hint = field.hint?.trim();
     return {
       kind: "question",
       number: i + 1,
-      questionCount,
       fieldType: field.type,
       title: field.label,
       required: field.required,
@@ -81,7 +78,7 @@ export function stepShortTitle(step: TutorialStep): string {
     case "settings":
       return "フォームの設定";
     case "question":
-      return `質問 ${step.number} / ${step.questionCount}：${step.title}`;
+      return `質問 ${step.number}：${step.title}`;
     case "publish":
       return "フォームを公開する";
     case "csv":
@@ -89,6 +86,6 @@ export function stepShortTitle(step: TutorialStep): string {
     case "check":
       return "試しに回答して確かめる";
     case "nextYear":
-      return "来年以降も使うとき";
+      return "次の展示でも使うとき";
   }
 }

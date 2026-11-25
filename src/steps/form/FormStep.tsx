@@ -36,12 +36,8 @@ export function FormStep({ fields, finish }: FormStepProps) {
 
   return (
     <section className="tutorial" aria-label="Google フォームの作り方">
+      {/* 見本と前へ・次へは高さを固定して上に置き、本文の長さでボタンが動かないようにする */}
       <StepPreview step={step} />
-
-      <div className="tutorial-step">
-        <h3 className="tutorial-step-heading">{stepShortTitle(step)}</h3>
-        <StepContent key={index} step={step} />
-      </div>
 
       {/* 端でも disabled にしない。disabled にするとフォーカスが外れてしまうため */}
       <div className="tutorial-nav">
@@ -59,6 +55,11 @@ export function FormStep({ fields, finish }: FormStepProps) {
         >
           {isLast ? finish.label : "次へ"}
         </button>
+      </div>
+
+      <div className="tutorial-step">
+        <h3 className="tutorial-step-heading">{stepShortTitle(step)}</h3>
+        <StepContent key={index} step={step} />
       </div>
       <p className="visually-hidden" role="status">
         {announcement}

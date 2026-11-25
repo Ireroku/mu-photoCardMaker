@@ -36,7 +36,6 @@ describe("buildTutorialSteps", () => {
       {
         kind: "question",
         number: 1,
-        questionCount: 2,
         fieldType: "text",
         title: "作品の題名",
         required: true,
@@ -45,7 +44,6 @@ describe("buildTutorialSteps", () => {
       {
         kind: "question",
         number: 2,
-        questionCount: 2,
         fieldType: "text",
         title: "撮影場所",
         required: false,
@@ -84,9 +82,9 @@ describe("GOOGLE_FORM_TYPES", () => {
 });
 
 describe("stepShortTitle", () => {
-  it("質問の手順は「質問 n / N」と質問文を出す", () => {
+  it("質問の手順は「質問 n」と質問文を出す", () => {
     const titles = buildTutorialSteps(fields).map(stepShortTitle);
-    expect(titles).toContain("質問 1 / 2：作品の題名");
-    expect(titles).toContain("質問 2 / 2：撮影場所");
+    expect(titles).toContain("質問 1：作品の題名");
+    expect(titles).toContain("質問 2：撮影場所");
   });
 });
