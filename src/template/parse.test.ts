@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import defaultJson from "./default.json";
+import defaultJson from "./parts/default.json";
 import { formatPath, parseTemplate, stringifyTemplate, validateTemplate } from "./parse";
 
 // 壊れた JSON をわざと作るため、型を付けずに書き換える

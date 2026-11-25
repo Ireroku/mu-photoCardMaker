@@ -1,0 +1,116 @@
+/* 手順③「並べて確認」の見た目 */
+
+.order-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  align-items: center;
+}
+
+.order-list {
+  box-sizing: border-box;
+  inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-list > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(8rem, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0;
+  border-block-end: 1px solid #e3e5e8;
+}
+
+.order-list > li:has(button:focus-visible) {
+  background: #f0f5fc;
+}
+
+/* 落とす場所を示す線 */
+.order-list > li[data-drop-before]::before,
+.order-list > .order-drop-end::before {
+  position: absolute;
+  inset-block-start: -2px;
+  inset-inline: 0;
+  block-size: 3px;
+  content: "";
+  background: var(--ui-accent);
+  border-radius: 2px;
+}
+
+.order-list > .order-drop-end {
+  block-size: 4px;
+  border: 0;
+}
+
+.order-list > li[data-lifted] {
+  background: #f0f5fc;
+  opacity: 0.6;
+}
+
+.order-handle {
+  padding: 0 4px;
+  font-size: 1.25rem;
+  color: var(--ui-muted);
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  /* つまみの上だけ、タッチでのスクロールを止めてドラッグに使う */
+  touch-action: none;
+}
+
+.order-list[data-dragging],
+.order-list[data-dragging] * {
+  cursor: grabbing;
+}
+
+.order-number {
+  min-inline-size: 2ch;
+  font-variant-numeric: tabular-nums;
+  color: var(--ui-muted);
+  text-align: end;
+}
+
+.order-text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  min-inline-size: 0;
+}
+
+.order-title {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-sub {
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+.order-warning {
+  padding: 0 6px;
+  font-size: 0.75rem;
+  color: white;
+  white-space: nowrap;
+  background: #c62828;
+  border-radius: 4px;
+}
+
+.order-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: end;
+}
+
+.order-buttons button {
+  min-block-size: 2rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.875rem;
+}

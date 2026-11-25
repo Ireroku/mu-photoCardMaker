@@ -54,6 +54,16 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 - フォームは自動で作らない。代わりに、フォームの作り方のチュートリアルをテンプレート JSON から生成して画面に出す
 - Google の画面のスクリーンショットは使わない。画面が変わると古くなるため、HTML/CSS でざっくり再現する
 
+### コードの置き方
+
+- 機能ごとにフォルダを分ける
+- フォルダの外から読み込まれるファイルだけを、そのフォルダの直下に置く。フォルダの中でしか使わないファイルは `parts/` に置く
+- 関係のない複数の場所から使うファイルは `src/shared/` に置く
+- テストは、テストするファイルの隣に置く
+- コンポーネントは画面とそれを動かす小さなロジックをまとめて 1 つのファイルに置く。ページ全体のように多くのロジックをつなぐものだけ、ロジックを ts（フックや純粋な関数）に分ける
+- 使う人の都合で変えたくなる値は `src/settings.ts` にまとめる。範囲などは 1 か所で決め、検証と画面の両方から使う
+- 手順ごとの見た目は、その手順の `parts/` の CSS に置き、手順の入口の tsx から読み込む
+
 ## やらないこと
 
 - 要素を自由に配置できるドラッグ式のレイアウトエディタ
@@ -66,22 +76,29 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 | 知りたいこと | 読む場所 |
 |---|---|
 | 使い方、テンプレート JSON の仕様、公開の手順 | [README.md](./README.md) |
-| 画面の状態（テンプレート・CSV・列の対応・並び順）と、そこから求める札 | [src/app/state.ts](./src/app/state.ts)、[src/app/derive.ts](./src/app/derive.ts) |
+| 値を変えたい（文字の縮め方、余白や罫線の範囲、ファイル名、CSV の大きさの上限など） | まず [src/settings.ts](./src/settings.ts) |
+| 画面全体の組み立て | [src/App.tsx](./src/App.tsx)（画面）、[src/parts/useCaptionBoard.ts](./src/parts/useCaptionBoard.ts)（状態と、そこから求めるもの） |
+| 手順①〜④と「来年に引き継ぐ」の画面 | [src/steps/](./src/steps/) |
+| 画面の状態（テンプレート・CSV・列の対応・並び順）と、そこから求める札 | [src/state/state.ts](./src/state/state.ts)、[src/state/derive.ts](./src/state/derive.ts) |
 | CSV の読み込みと列の対応付け（同じ見出しの列は左から空でない値を使う） | [src/csv/](./src/csv/) |
-| 文字の自動縮小（計算は `fit.ts`・`autoFit.ts`、測るのは `measure.ts`・`useCardFits.ts`） | [src/print/](./src/print/) |
+| 文字の自動縮小（計算は `fit.ts`・`autoFit.ts`、測るのは `measure.ts`・`useCardFits.ts`） | [src/sheets/](./src/sheets/) |
 | テンプレート JSON の型と検証 | [src/template/schema.ts](./src/template/schema.ts) |
 | 再現の目標にする元のテンプレート | [reference/](./reference/README.md)（中身は Git で追跡しない） |
 
-機能ごとにフォルダを分け、同じフォルダの中で純粋なロジック（`*.ts`）と画面（`*.tsx`）を分ける。
+置き方の決まりは「[コードの置き方](#コードの置き方)」にある。
 
 ```
 src/
-  app/        画面全体（手順①〜④、来年に引き継ぐ）、状態（state.ts）、状態から札を求める計算（derive.ts）、並び順（order.ts）
-  csv/        文字コードの判別、CSV の読み込みと確かめ、列の対応付け、テスト用の fixtures/
-  tutorial/   Google フォームの作り方の手順
-  print/      ページとカード、印刷用 CSS、文字の自動縮小（fit.ts、autoFit.ts、measure.ts）
-  template/   テンプレート JSON の型と検証（zod）、既定のテンプレート（default.json）
+  App.tsx     画面全体（手順①〜④と来年に引き継ぐを並べる）。App.css は画面全体の配置とどの手順でも使う見た目
+  settings.ts 使う人の都合で変えたくなる値の一覧
+  parts/      App だけが使う部品（手順の枠、プレビューの縮小、画面全体の状態をまとめるフック）
+  steps/      手順ごとの画面。form/（①フォームを作る）、load/（②回答を読み込む）、order/（③並べて確認）、print/（④印刷）、handover/（来年に引き継ぐ）
+  state/      画面の状態（state.ts）、状態から札を求める計算（derive.ts）、並び順（parts/order.ts）
+  csv/        CSV の読み込み（loadCsvFile.ts）と列の対応付け（match.ts）、読み込んだ CSV の警告。文字コードの判別・パース・確かめは parts/、テスト用の fixtures/
+  sheets/     印刷するページとカード、印刷用 CSS、文字の自動縮小（autoFit.ts、parts/fit.ts、parts/measure.ts）
+  template/   テンプレート JSON の型と検証（zod）、既定のテンプレート（parts/default.json）
   fonts/      同梱するフォントの一覧
+  shared/     関係のない複数の場所から使うもの（見出しの正規化、ファイルのドロップ、単位の換算など）
 public/licenses/  フォントのライセンス文
 vite/             ビルド用のプラグイン
 ```

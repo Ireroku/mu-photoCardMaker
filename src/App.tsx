@@ -1,0 +1,187 @@
+// CSS の重なり順を変えないよう、sheets・手順①・App.css・手順②〜の順に読み込む（同じ強さの指定は後のものが勝つ）
+import { cardId } from "./shared/cardId";
+import { Sheets } from "./sheets/Sheets";
+import { FormStep } from "./steps/form/FormStep";
+import "./App.css";
+import { LoadStep } from "./steps/load/LoadStep";
+import { OrderStep } from "./steps/order/OrderStep";
+import { PrintStep } from "./steps/print/PrintStep";
+import { HandoverSection } from "./steps/handover/HandoverSection";
+import { openStep } from "./parts/openStep";
+import { Step } from "./parts/Step";
+import { useCaptionBoard } from "./parts/useCaptionBoard";
+
+export function App() {
+  // ref を含むので、オブジェクトのまま持たず取り出して使う（react-hooks/refs のため）
+  const {
+    state,
+    dispatch,
+    mapped,
+    cards,
+    cardFits,
+    overflowCards,
+    autoComplete,
+    autoMapping,
+    csvDone,
+    fits,
+    issues,
+    loadCsv,
+    loadStatus,
+    moreOverflowCount,
+    overflowLinks,
+    pageCount,
+    preview,
+    previewDrop,
+  } = useCaptionBoard();
+  const { template, csv } = state;
+
+  return (
+    <>
+      <header className="app-header screen-only">
+        <h1>キャプションボード作成ツール</h1>
+        <p>Google フォームの回答から、展示用のキャプション（札）を A4 に並べて印刷します。</p>
+      </header>
+
+      <div className="workspace">
+        <div className="steps screen-only">
+          <Step
+            id="step-form"
+            number={1}
+            title="フォームを作る"
+            status="初めての人・フォームがまだない人はこちら"
+            open={false}
+          >
+            <FormStep fields={template.fields} />
+            <button
+              type="button"
+              className="next-step"
+              onClick={() => openStep("step-load", "[data-csv-button]")}
+            >
+              回答が集まったら ② 回答を読み込む へ
+            </button>
+          </Step>
+
+          <Step
+            id="step-load"
+            number={2}
+            title="回答を読み込む"
+            open={!autoComplete}
+            done={csvDone && !state.csvRejected}
+            status={loadStatus}
+          >
+            <LoadStep
+              csv={csv}
+              csvRejected={state.csvRejected}
+              fields={template.fields}
+              columns={state.columns}
+              autoMapping={autoMapping}
+              issues={issues}
+              cardCount={cards.captions.length}
+              skippedCount={mapped.skippedRows.length}
+              onFiles={loadCsv}
+              dispatch={dispatch}
+            />
+          </Step>
+
+          <Step
+            id="step-order"
+            number={3}
+            title="並べて確認"
+            open={csv !== null}
+            status={csv ? undefined : "CSV を読み込むと並び順を変えられます"}
+          >
+            {csv ? (
+              <OrderStep
+                csv={csv}
+                fields={template.fields}
+                captions={cards.captions}
+                rows={cards.rows}
+                sortColumn={state.sortColumn}
+                overflowCards={overflowCards}
+                dispatch={dispatch}
+              />
+            ) : (
+              <p className="note">CSV を読み込むと、ここで札の並び順（展示の順）を変えられます。</p>
+            )}
+          </Step>
+
+          <Step id="step-print" number={4} title="印刷" open={csv !== null}>
+            <PrintStep
+              template={template}
+              isSample={mapped.isSample}
+              savedBorderPt={state.savedBorderPt}
+              cardCount={cards.captions.length}
+              overflowCount={overflowCards.size}
+              fitsReady={cardFits.ready || cardFits.failed}
+              dispatch={dispatch}
+            />
+          </Step>
+
+          <HandoverSection
+            template={template}
+            templateFileName={state.templateFileName}
+            templateRejected={state.templateRejected}
+            dispatch={dispatch}
+          />
+        </div>
+
+        <section
+          className="preview-pane"
+          aria-label="印刷のプレビュー"
+          data-over={previewDrop.isOver || undefined}
+          {...previewDrop.handlers}
+        >
+          <div className="preview-toolbar screen-only">
+            <p aria-live="polite">
+              {cards.captions.length} 枚の札 → {template.page.size} {pageCount} 枚
+            </p>
+            {overflowCards.size > 0 && (
+              <div className="overflow-summary" role="status">
+                <p>{overflowCards.size} 枚のカードで文字が収まりません（端が「…」で切れます）：</p>
+                <ul>
+                  {overflowLinks.map((i) => (
+                    <li key={i}>
+                      <a href={`#${cardId(i)}`}>{i + 1} 番</a>
+                    </li>
+                  ))}
+                  {moreOverflowCount > 0 && <li>ほか {moreOverflowCount} 枚</li>}
+                </ul>
+              </div>
+            )}
+            {cardFits.failed && (
+              <p className="overflow-summary" role="status">
+                文字の自動縮小ができませんでした。長い文字は端が「…」で切れます。
+              </p>
+            )}
+          </div>
+          {mapped.isSample && (
+            <p className="sample-band screen-only">
+              見本 — CSV を読み込むと、本物の札に置き換わります
+            </p>
+          )}
+          <div className="preview" ref={preview} data-sample={mapped.isSample || undefined}>
+            {pageCount === 0 ? (
+              <p className="preview-empty screen-only">札がありません</p>
+            ) : (
+              <Sheets
+                template={template}
+                captions={cards.captions}
+                fits={fits}
+                cardId={cardId}
+                mark={mapped.isSample ? "見本" : undefined}
+                badge={(i) => (
+                  <span className="card-badge" aria-hidden="true">
+                    <span>{i + 1}</span>
+                    {overflowCards.has(i) && (
+                      <span className="card-badge-warning">収まりません</span>
+                    )}
+                  </span>
+                )}
+              />
+            )}
+          </div>
+        </section>
+      </div>
+    </>
+  );
+}

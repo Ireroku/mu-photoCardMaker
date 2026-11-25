@@ -79,7 +79,7 @@ Google フォームで集めた作品の情報から、写真展示のキャプ�
 | `layout` | キャプションに載せる文字と線の並べ方。上から縦に積み、中央にそろえる。`section` は段、`line` は横線 |
 | `items` | 段の中に並べる文字。`field` に `fields` の `key` を書く。長くて入らない時は `min_size_pt` まで縮める（省くと `size_pt` の 60%） |
 
-- 値の範囲や省略できる項目は [`src/template/schema.ts`](./src/template/schema.ts) にあります
+- 省略できる項目は [`src/template/schema.ts`](./src/template/schema.ts)、余白や罫線の太さの範囲などの値は [`src/settings.ts`](./src/settings.ts) にあります
 - 書き間違えると、読み込んだ時に画面にエラーが出ます
 
 ## 🛠️ 開発

@@ -1,0 +1,357 @@
+/* 画面全体の配置と、どの手順でも使う部品の見た目。手順ごとの見た目は各手順の parts/ の CSS、印刷するページの見た目は sheets/parts/sheets.css */
+
+:root {
+  --ui-text: #1f1f1f;
+  --ui-muted: #555;
+  --ui-surface: #fff;
+  --ui-border: #c9ced6;
+  --ui-backdrop: #e6e8eb;
+  --ui-accent: #1a5fb4;
+  --ui-done: #2e7d32;
+  --ui-error-bg: #fdecea;
+  --ui-error-text: #8a1c12;
+  --ui-warning-bg: #fff6e0;
+  --ui-warning-text: #6b4a00;
+  /* 暗い配色にはまだ対応していないので、明るい配色に固定する */
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  color: var(--ui-text);
+}
+
+/* ページが増えてスクロールバーが出ても幅が変わらず、プレビューの縮小の倍率が揺れないようにする */
+html {
+  scrollbar-gutter: stable;
+  /* 「収まりません」の一覧から札へ飛んだとき、上に貼り付いたプレビューの見出しに隠れないようにする */
+  scroll-padding-block-start: 9rem;
+}
+
+body {
+  margin: 0;
+  background: var(--ui-surface);
+}
+
+/* ボタンと入力欄の共通の見た目（フォームの作り方の手順の中は steps/form/parts/form.css が決める） */
+:where(.app-header, .steps, .preview-pane, .print-dialog) :where(button, select, input) {
+  font: inherit;
+  color: inherit;
+}
+
+:where(.steps, .print-dialog) button:not(.link, .tutorial *) {
+  min-block-size: 2.25rem;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  background: var(--ui-surface);
+  border: 1px solid #999;
+  border-radius: 6px;
+}
+
+:where(.steps, .print-dialog) button.primary {
+  font-weight: 700;
+  color: white;
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+}
+
+:where(.steps, .print-dialog) button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+:where(.steps, .preview-pane, .print-dialog) :is(button, select, input, a, summary):focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+button.link {
+  padding: 0;
+  color: var(--ui-accent);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+select {
+  max-inline-size: 100%;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid #999;
+  border-radius: 6px;
+}
+
+.note {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+/* 見出し */
+.app-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+/* 手順とプレビューの 2 段組み。幅が狭いときは縦に並べる */
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media screen and (min-width: 64rem) {
+  .workspace {
+    grid-template-columns: minmax(26rem, 38rem) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .preview-pane {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100dvh;
+    overflow-y: auto;
+    scroll-padding-block-start: 9rem;
+  }
+
+  /* 2 段組みのときは、プレビューの中だけがスクロールするので、ページ側の余白は要らない */
+  html {
+    scroll-padding-block-start: 0;
+  }
+}
+
+.steps {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 16px;
+}
+
+/* 手順 1 つ分 */
+.step {
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+}
+
+.step > summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.step > summary::marker {
+  content: "";
+}
+
+.step > summary::after {
+  margin-inline-start: auto;
+  font-size: 0.8rem;
+  color: var(--ui-muted);
+  content: "開く ▾";
+}
+
+.step[open] > summary::after {
+  content: "閉じる ▴";
+}
+
+.step-number {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  background: var(--ui-accent);
+  border-radius: 50%;
+}
+
+.step[data-done] .step-number {
+  background: var(--ui-done);
+}
+
+.step-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.step-status {
+  overflow: hidden;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.step-body {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 0 14px 14px;
+}
+
+.step-body > * {
+  max-inline-size: 100%;
+}
+
+.next-step {
+  margin-block-start: 8px;
+}
+
+/* 警告とエラー。何が起きたかと、どうすればよいかを書く */
+.message {
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.message p {
+  margin: 0;
+}
+
+.message p + p {
+  margin-block-start: 4px;
+}
+
+.message.error {
+  color: var(--ui-error-text);
+  background: var(--ui-error-bg);
+}
+
+.message.error > p:first-child {
+  font-weight: 700;
+}
+
+.message.warning {
+  color: var(--ui-warning-text);
+  background: var(--ui-warning-bg);
+}
+
+.message ul {
+  margin: 4px 0 0;
+  padding-inline-start: 1.25em;
+}
+
+.field-error {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--ui-error-text);
+}
+
+:where(.steps, .print-dialog) button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* プレビュー */
+.preview-pane {
+  box-sizing: border-box;
+  background: var(--ui-backdrop);
+  border: 2px solid transparent;
+}
+
+.preview-pane[data-over] {
+  background: #e3eefc;
+  border-color: var(--ui-accent);
+}
+
+.preview-toolbar {
+  position: sticky;
+  z-index: 1;
+  inset-block-start: 0;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  background: rgb(230 232 235 / 0.95);
+}
+
+.preview-toolbar p {
+  margin: 0;
+}
+
+.overflow-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  margin-block-start: 4px;
+  color: var(--ui-error-text);
+}
+
+.overflow-summary ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.overflow-summary a {
+  color: inherit;
+  font-weight: 700;
+}
+
+.sample-band {
+  margin: 8px 16px 0;
+  padding: 4px 12px;
+  font-weight: 700;
+  color: #6b4a00;
+  text-align: center;
+  background: #ffe9a8;
+  border-radius: 6px;
+}
+
+.preview {
+  padding: 16px;
+}
+
+/* 見本のあいだは札を薄くし、本物でないことを見た目で示す（画面だけ） */
+@media screen {
+  .preview[data-sample] .card > :not(.card-badge) {
+    opacity: 0.45;
+  }
+}
+
+.preview-empty {
+  inline-size: fit-content;
+  margin: 0 auto;
+  padding: 8px 16px;
+  background: var(--ui-surface);
+  border-radius: 6px;
+}
+
+@media print {
+  .screen-only {
+    display: none !important;
+  }
+
+  .workspace {
+    display: block;
+  }
+
+  .preview-pane {
+    border: 0;
+  }
+
+  body,
+  .preview-pane {
+    background: white;
+  }
+
+  .preview {
+    padding: 0;
+  }
+}

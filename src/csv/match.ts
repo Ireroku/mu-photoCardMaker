@@ -1,4 +1,4 @@
-import { normalizeLabel } from "./normalize";
+import { normalizeLabel } from "../shared/normalize";
 
 /** 対応付けに使うフィールドの最小限の形。テンプレートの fields[] がこの形を満たせばよい */
 export type FieldLike = {

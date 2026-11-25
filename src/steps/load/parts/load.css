@@ -1,0 +1,92 @@
+/* 手順②「回答を読み込む」の見た目 */
+
+/* ② CSV を落とす場所 */
+.dropzone {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding: 20px 12px;
+  text-align: center;
+  background: #f6f8fb;
+  border: 2px dashed var(--ui-border);
+  border-radius: 8px;
+}
+
+.dropzone p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--ui-muted);
+}
+
+.dropzone[data-over] {
+  background: #e3eefc;
+  border-color: var(--ui-accent);
+}
+
+.dropzone .primary {
+  padding-inline: 2rem;
+  font-size: 1.05rem;
+}
+
+.loaded {
+  margin: 0;
+}
+
+/* 列の対応 */
+.mapping-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.mapping {
+  inline-size: 100%;
+}
+
+.mapping p {
+  margin: 0 0 6px;
+}
+
+.mapping table {
+  inline-size: 100%;
+  margin-block-end: 6px;
+  border-collapse: collapse;
+}
+
+.mapping th,
+.mapping td {
+  padding: 6px 8px 6px 0;
+  text-align: start;
+  vertical-align: top;
+  border-block-end: 1px solid #e3e5e8;
+}
+
+.mapping tbody th {
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.mapping select {
+  inline-size: 100%;
+}
+
+.mapping tr[data-missing] th,
+.mapping tr[data-missing] td {
+  background: var(--ui-error-bg);
+}
+
+.mapping tr[data-missing] select {
+  border: 2px solid var(--ui-error-text);
+}
+
+.required {
+  margin-inline-start: 6px;
+  padding: 0 4px;
+  font-size: 0.75rem;
+  color: var(--ui-error-text);
+  border: 1px solid currentcolor;
+  border-radius: 4px;
+}

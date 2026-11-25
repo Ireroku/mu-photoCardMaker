@@ -1,7 +1,9 @@
 import { z } from "zod";
-import { normalizeLabel } from "../csv/normalize";
 import { FONT_IDS } from "../fonts/fonts";
-import { sheetGeometry } from "../print/geometry";
+import { BORDER_PT, MARGIN_MM } from "../settings";
+import { normalizeLabel } from "../shared/normalize";
+import { MM_PER_PT } from "../shared/units";
+import { sheetGeometry } from "../sheets/geometry";
 import { PAPER_SIZES_MM, type PaperSize } from "./paper";
 
 // zod のエラーを日本語にする（アプリ全体に効く設定）。
@@ -11,8 +13,6 @@ z.config(z.locales.ja());
 // テンプレート JSON（version 1）の形。
 // 書き間違えたキーを黙って捨てないよう、オブジェクトはすべて strictObject にする。
 // 種類を足すときは、fieldSchema や layout の判別ユニオンに 1 つ足す。
-
-const MM_PER_PT = 25.4 / 72;
 
 /** min 以上 max 以下の数 */
 const between = (min: number, max: number) => z.number().min(min).max(max);
@@ -25,7 +25,7 @@ const pageSchema = z.strictObject({
   size: z.enum(PAPER_SIZES),
   orientation: z.enum(["landscape", "portrait"]),
   /** 用紙の端からカードの並びまでの余白 */
-  margin_mm: between(0, 50),
+  margin_mm: between(MARGIN_MM.min, MARGIN_MM.max),
 });
 
 const gridSchema = z.strictObject({
@@ -35,7 +35,7 @@ const gridSchema = z.strictObject({
 
 const cardSchema = z.strictObject({
   /** カードの罫線（切り取り線を兼ねる）。0 なら線を引かない */
-  border_pt: between(0, 10),
+  border_pt: between(BORDER_PT.min, BORDER_PT.max),
   /** 罫線から中身までの余白 */
   padding_mm: between(0, 20),
 });
@@ -64,7 +64,7 @@ const textItemSchema = z.strictObject({
   kind: z.literal("text"),
   field: z.string().min(1),
   size_pt: positiveUpTo(200),
-  /** 長くて収まらないとき、この大きさまで縮める。省略時は size_pt の 60%（print/fit.ts の resolveMinPt） */
+  /** 長くて収まらないとき、この大きさまで縮める。省略時は size_pt の 60%（sheets/parts/fit.ts の resolveMinPt） */
   min_size_pt: positiveUpTo(200).optional(),
   bold: z.boolean().optional(),
 });

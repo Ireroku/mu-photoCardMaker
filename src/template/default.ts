@@ -1,4 +1,4 @@
-import defaultJson from "./default.json";
+import defaultJson from "./parts/default.json";
 import { validateTemplate } from "./parse";
 import type { Template } from "./schema";
 
