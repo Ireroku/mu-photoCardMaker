@@ -14,8 +14,8 @@ type PrintStepProps = {
   isSample: boolean;
   savedBorderPt: number;
   cardCount: number;
-  /** 文字が収まらないカードの数 */
-  overflowCount: number;
+  /** 文字が省略されるカードがあるときの知らせ */
+  overflowMessage: string | undefined;
   /** 文字の自動縮小が今の設定で測り終わっている */
   fitsReady: boolean;
   dispatch: Dispatch<AppAction>;
@@ -24,7 +24,7 @@ type PrintStepProps = {
 const TOO_SMALL = "この値だとカードが小さくなりすぎます。";
 
 export function PrintStep(props: PrintStepProps) {
-  const { template, isSample, savedBorderPt, cardCount, overflowCount, fitsReady, dispatch } =
+  const { template, isSample, savedBorderPt, cardCount, overflowMessage, fitsReady, dispatch } =
     props;
   const dialog = useRef<HTMLDialogElement>(null);
   const { card } = sheetGeometry(template);
@@ -95,7 +95,7 @@ export function PrintStep(props: PrintStepProps) {
           />
           <p className="note">
             カード 1 枚は 約 {card.width.toFixed(1)} × {card.height.toFixed(1)} mm
-            です。ここで変えた値は、下の「来年に引き継ぐ」で保存するファイルにも入ります。
+            です。ここで変えた値は、ページの下の「設定ファイル」でダウンロードするファイルにも入ります。
           </p>
         </div>
       </details>
@@ -106,31 +106,29 @@ export function PrintStep(props: PrintStepProps) {
         aria-labelledby="print-dialog-title"
         onClose={onClose}
       >
-        <h2 id="print-dialog-title">印刷の画面で、次の 3 つを確かめてください</h2>
+        <h2 id="print-dialog-title">印刷の画面で確かめること</h2>
         {/*
           未確認：項目名（倍率・余白など）と「余白：なし」が要るかどうかは、ブラウザ（Chrome / Safari / Edge）の
           実際の印刷の画面ではまだ確かめていない。@page { margin: 0 } で余白が自動で効くなら、3 つ目は消せる
         */}
         <ol className="checklist">
           <li>
-            <strong>送信先</strong>：プリンター、または「PDF に保存」
+            PDF にするときは、送信先を<strong>「PDF に保存」</strong>にする
           </li>
           <li>
-            <strong>倍率</strong>：100%（「実際のサイズ」）
+            倍率を<strong>100%</strong>にする（「実際のサイズ」と書かれていることもある）
           </li>
           <li>
-            <strong>余白</strong>：「なし」
+            余白を<strong>「なし」</strong>にする
           </li>
         </ol>
-        {overflowCount > 0 && (
-          <p className="field-error">{overflowCount} 枚のカードで文字が収まらず、省略されます。</p>
-        )}
+        {overflowMessage && <p className="field-error">{overflowMessage}。</p>}
         {isSample && (
           <p className="note">今は見本のカードです。各ページに「見本」と印刷されます。</p>
         )}
         <form method="dialog" className="dialog-buttons">
           <button value="print" className="primary" disabled={!fitsReady} autoFocus>
-            {fitsReady ? "この設定で印刷する" : "文字の大きさを計算中…"}
+            {fitsReady ? "印刷の画面を開く" : "文字の大きさを計算中…"}
           </button>
           <button value="">やめる</button>
         </form>

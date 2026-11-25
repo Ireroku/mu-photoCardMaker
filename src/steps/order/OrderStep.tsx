@@ -5,7 +5,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type Dispatch } from "react";
 import type { LoadedCsv } from "../../csv/loadCsvFile";
 import { laterDuplicateColumns } from "../../csv/match";
-import { ANNOUNCE_DELAY_MS } from "../../settings";
+import { ANNOUNCE_DELAY_MS, ORDER_HEADER } from "../../settings";
 import { cardId } from "../../shared/cardId";
 import type { Caption } from "../../sheets/geometry";
 import type { AppAction } from "../../state/state";
@@ -20,10 +20,15 @@ type OrderStepProps = {
   /** captions のそれぞれの、CSV の行の番号 */
   rows: readonly number[];
   sortColumn: number | null;
+  /** 一覧で手で動かしたあと（列で並べ替えた順でも、読み込んだ順でもない） */
+  manuallyOrdered: boolean;
   /** 文字が収まらないカードの番号（0 始まり） */
   overflowCards: ReadonlySet<number>;
   dispatch: Dispatch<AppAction>;
 };
+
+/** 手で動かしたあとの選択肢の値。列の番号と重ならない値にする */
+const MANUAL = "manual";
 
 type Direction = "first" | "up" | "down" | "last";
 
@@ -43,7 +48,8 @@ const FALLBACK_FOCUS: Record<Direction, Direction> = {
 };
 
 export function OrderStep(props: OrderStepProps) {
-  const { csv, fields, captions, rows, sortColumn, overflowCards, dispatch } = props;
+  const { csv, fields, captions, rows, sortColumn, manuallyOrdered, overflowCards, dispatch } =
+    props;
   const selectId = useId();
   const list = useRef<HTMLOListElement>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -101,13 +107,19 @@ export function OrderStep(props: OrderStepProps) {
         <label htmlFor={selectId}>並び替えに使う列</label>
         <select
           id={selectId}
-          value={sortColumn ?? ""}
+          value={sortColumn ?? (manuallyOrdered ? MANUAL : "")}
           onChange={(event) => {
             const value = event.currentTarget.value;
             dispatch({ type: "sortedByColumn", column: value === "" ? null : Number(value) });
           }}
         >
-          <option value="">（選ばない）</option>
+          <option value="">読み込んだ順</option>
+          {/* 今の状態を示すだけの項目。選び直すことはできない */}
+          {manuallyOrdered && (
+            <option value={MANUAL} disabled>
+              手で並べた順
+            </option>
+          )}
           {csv.headers.map((header, i) =>
             // 同じ見出しの列は左の列とまとめて読むので、1 つだけ出す
             hiddenColumns.has(i) ? null : (
@@ -117,12 +129,10 @@ export function OrderStep(props: OrderStepProps) {
             ),
           )}
         </select>
-        <button type="button" onClick={() => dispatch({ type: "sortedByColumn", column: null })}>
-          読み込んだ順に戻す
-        </button>
       </div>
       <p className="note">
-        数字の入った列（「並び順」など）を選ぶと、小さい順に並べます。数字でない値や空欄のカードは最後に回ります。並べたあと、下の一覧で手で動かすこともできます。
+        数字の入った列（「{ORDER_HEADER}
+        」など）を選ぶと、小さい順に並べます。数字でない値や空欄のカードは最後に回ります。並べたあと、下の一覧で手で動かすこともできます。
       </p>
 
       <ol

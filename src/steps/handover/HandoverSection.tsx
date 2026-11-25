@@ -1,4 +1,4 @@
-// ページの下の「来年に引き継ぐ」：テンプレート（項目・見た目・余白・切り取り線）をファイルに保存し、読み込む。
+// ページの下の「設定ファイル」：テンプレート（質問・見た目・余白・切り取り線）をファイルに保存し、読み込む。
 
 import { useRef, type Dispatch } from "react";
 import { MAX_SHOWN_ERRORS } from "../../settings";
@@ -24,13 +24,13 @@ export function HandoverSection(props: HandoverSectionProps) {
 
   return (
     <section className="handover" aria-labelledby="handover-title">
-      <h2 id="handover-title">来年に引き継ぐ</h2>
+      <h2 id="handover-title">設定ファイル</h2>
       <div className="buttons">
         <button type="button" onClick={() => saveTemplateFile(template)}>
-          設定をファイルに保存
+          ダウンロード
         </button>
         <button type="button" onClick={() => fileInput.current?.click()}>
-          保存した設定を読み込む
+          読み込む
         </button>
         <input
           ref={fileInput}
@@ -43,7 +43,7 @@ export function HandoverSection(props: HandoverSectionProps) {
           }}
         />
       </div>
-      <p className="note">保存されるもの：項目・文字の大きさ・余白・切り取り線</p>
+      <p className="note">保存されるもの：質問・文字の大きさ・余白・切り取り線</p>
       {templateFileName && (
         <p className="note" role="status">
           「{templateFileName}」の設定を使っています。

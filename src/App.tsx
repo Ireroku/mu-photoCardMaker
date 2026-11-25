@@ -20,6 +20,7 @@ export function App() {
     cards,
     cardFits,
     overflowCards,
+    overflowMessage,
     autoComplete,
     autoMapping,
     csvDone,
@@ -47,7 +48,7 @@ export function App() {
             <FormStep
               fields={template.fields}
               finish={{
-                label: "② 回答を読み込む へ",
+                label: "次へ：② 回答を読み込む",
                 onClick: () => openStep("step-load", "[data-csv-button]"),
               }}
             />
@@ -89,6 +90,7 @@ export function App() {
                 captions={cards.captions}
                 rows={cards.rows}
                 sortColumn={state.sortColumn}
+                manuallyOrdered={state.sortColumn === null && state.order !== null}
                 overflowCards={overflowCards}
                 dispatch={dispatch}
               />
@@ -101,7 +103,7 @@ export function App() {
               isSample={mapped.isSample}
               savedBorderPt={state.savedBorderPt}
               cardCount={cards.captions.length}
-              overflowCount={overflowCards.size}
+              overflowMessage={overflowMessage}
               fitsReady={cardFits.ready || cardFits.failed}
               dispatch={dispatch}
             />
@@ -123,11 +125,11 @@ export function App() {
         >
           <div className="preview-toolbar screen-only">
             <p aria-live="polite">
-              カード {cards.captions.length} 枚 → {template.page.size} {pageCount} 枚
+              {template.page.size} {pageCount} 枚（カード {cards.captions.length} 枚）
             </p>
-            {overflowCards.size > 0 && (
+            {overflowMessage && (
               <div className="overflow-summary" role="status">
-                <p>{overflowCards.size} 枚のカードで文字が収まらず、省略されます：</p>
+                <p>{overflowMessage}：</p>
                 <ul>
                   {overflowLinks.map((i) => (
                     <li key={i}>
@@ -140,7 +142,7 @@ export function App() {
             )}
             {cardFits.failed && (
               <p className="overflow-summary" role="status">
-                文字の自動縮小ができませんでした。長い文字は省略されます。
+                文字の大きさを計算できませんでした。長い文字は「…」で省略されます。
               </p>
             )}
           </div>

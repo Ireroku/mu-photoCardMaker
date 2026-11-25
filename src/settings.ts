@@ -17,7 +17,7 @@ export const FIT_SAFETY_MM = 0.5;
 
 // ---- ファイルと列の名前 ----
 
-/** 「来年に引き継ぐ」で保存するファイルの名前の頭。後ろに年と .json が付く */
+/** 「設定ファイル」でダウンロードするファイルの名前の頭。後ろに年と .json が付く */
 export const TEMPLATE_FILE_PREFIX = "caption-template-";
 
 /** この見出しの列が CSV にあれば、読み込んだときにその列で並べる */

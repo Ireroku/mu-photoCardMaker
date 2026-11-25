@@ -6,7 +6,7 @@ import { loadCsvFile } from "../csv/loadCsvFile";
 import { matchColumns } from "../csv/match";
 import { MAX_OVERFLOW_LINKS } from "../settings";
 import { useFileDrop, usePreventStrayFileDrop } from "../shared/useFileDrop";
-import { hasOverflow } from "../sheets/autoFit";
+import { hasOverflow, textItems } from "../sheets/autoFit";
 import { pageCount as countPages, sheetGeometry } from "../sheets/geometry";
 import { useCardFits } from "../sheets/useCardFits";
 import { mapCards, orderCards } from "../state/derive";
@@ -31,6 +31,22 @@ export function useCaptionBoard() {
     [fits],
   );
   const overflowList = [...overflowCards];
+  /** 「3 枚で「題名」「撮影者名」が省略されています」。省略が起きた質問だけを、質問の順に挙げる */
+  const overflowMessage = useMemo(() => {
+    if (!fits || overflowCards.size === 0) return undefined;
+    const overflowed = new Set(
+      fits.flatMap((fit) =>
+        Object.entries(fit).flatMap(([id, result]) => (result?.overflow ? [id] : [])),
+      ),
+    );
+    const keys = new Set(
+      textItems(template.layout).flatMap(({ id, item }) =>
+        overflowed.has(id) ? [item.field] : [],
+      ),
+    );
+    const labels = template.fields.filter((f) => keys.has(f.key)).map((f) => `「${f.label}」`);
+    return `${overflowCards.size} 枚で${labels.join("")}が省略されています`;
+  }, [fits, overflowCards, template.layout, template.fields]);
 
   const autoMapping = useMemo(
     () => (csv ? matchColumns(csv.headers, template.fields) : null),
@@ -68,7 +84,7 @@ export function useCaptionBoard() {
   if (state.csvRejected) loadStatus = `「${state.csvRejected.fileName}」を読み込めませんでした`;
   else if (csv && !csvDone) loadStatus = "必須の質問に当たる列を選んでください";
   else if (csv) {
-    loadStatus = `「${csv.fileName}」 ${cards.captions.length} 枚`;
+    loadStatus = `「${csv.fileName}」からカード ${cards.captions.length} 枚`;
     if (issues.length > 0) loadStatus += `・確かめてほしいことが ${issues.length} 件`;
   }
 
@@ -80,6 +96,7 @@ export function useCaptionBoard() {
     cardFits,
     fits,
     overflowCards,
+    overflowMessage,
     /** 「収まりません」の一覧にリンクで出すカードの番号 */
     overflowLinks: overflowList.slice(0, MAX_OVERFLOW_LINKS),
     /** リンクにせず件数だけ出すカードの数 */
