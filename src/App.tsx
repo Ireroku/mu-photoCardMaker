@@ -40,6 +40,9 @@ export function App() {
     <>
       <header className="app-header screen-only">
         <h1>キャプションボード作成ツール</h1>
+        <p className="app-version" title="現在のバージョン">
+          {__COMMIT_HASH__}
+        </p>
       </header>
 
       <div className="workspace">
