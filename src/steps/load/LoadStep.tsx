@@ -81,7 +81,7 @@ export function LoadStep(props: LoadStepProps) {
       {csv && autoMapping && (
         <>
           <p className="loaded" role="status">
-            「{csv.fileName}」から <strong>{props.cardCount}</strong> 枚の札を作りました。
+            「{csv.fileName}」からカードを <strong>{props.cardCount}</strong> 枚作りました。
             {props.skippedCount > 0 && ` ${props.skippedCount} 行は空のため除外しました。`}
           </p>
           {issues.length > 0 && (

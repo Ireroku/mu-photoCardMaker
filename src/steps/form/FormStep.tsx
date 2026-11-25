@@ -1,23 +1,21 @@
 // 手順①：Google フォームの作り方を、質問 1 つずつ案内する画面。
-// 手順の中身は parts/tutorialSteps.ts が fields から組み立て、手順ごとの文は parts/StepContent.tsx に置く。
+// 手順の中身は parts/tutorialSteps.ts が fields から組み立て、手順ごとの文は parts/StepContent.tsx、
+// 見本は parts/StepPreview.tsx に置く。
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useState } from "react";
 import type { Field } from "../../template/schema";
-import { FormCardPreview, FormHeaderPreview } from "./parts/FormCardPreview";
 import { StepContent } from "./parts/StepContent";
-import {
-  buildTutorialSteps,
-  GOOGLE_FORM_TYPES,
-  stepShortTitle,
-  type TutorialStep,
-} from "./parts/tutorialSteps";
+import { StepPreview } from "./parts/StepPreview";
+import { buildTutorialSteps, stepShortTitle } from "./parts/tutorialSteps";
 import "./parts/form.css";
 
 interface FormStepProps {
   fields: readonly Field[];
+  /** 最後の手順の「次へ」の代わりに出すボタンの文字と、押したときの動き */
+  finish: { label: string; onClick: () => void };
 }
 
-export function FormStep({ fields }: FormStepProps) {
+export function FormStep({ fields, finish }: FormStepProps) {
   const steps = buildTutorialSteps(fields);
   const [requestedIndex, setRequestedIndex] = useState(0);
   // fields が減ったときに範囲の外を指さないようにする
@@ -26,59 +24,23 @@ export function FormStep({ fields }: FormStepProps) {
   const isFirst = index === 0;
   const isLast = index === steps.length - 1;
 
-  // 一覧から手順を選んだときだけ、見出しへフォーカスを移す。
-  // 数を増やすたびに 1 回だけ動くので、ほかの理由で index が変わってもフォーカスを奪わない
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const [headingFocusRequest, setHeadingFocusRequest] = useState(0);
-  useEffect(() => {
-    if (headingFocusRequest > 0) headingRef.current?.focus();
-  }, [headingFocusRequest]);
-
   // 前へ・次へではフォーカスをボタンに残し、新しい手順の名前を読み上げる
   const [announcement, setAnnouncement] = useState("");
-
-  const selectFromList = (next: number) => {
-    setRequestedIndex(next);
-    setAnnouncement("");
-    setHeadingFocusRequest((n) => n + 1);
-  };
-
   const move = (delta: number) => {
     const next = index + delta;
     const nextStep = steps[next];
     if (!nextStep) return;
     setRequestedIndex(next);
-    setAnnouncement(`手順 ${next + 1} / ${steps.length}：${stepShortTitle(nextStep)}`);
+    setAnnouncement(`${next + 1} / ${steps.length}：${stepShortTitle(nextStep)}`);
   };
 
   return (
-    <section className="tutorial" aria-labelledby="tutorial-title">
-      <h3 id="tutorial-title">Google フォームの作り方</h3>
+    <section className="tutorial" aria-label="Google フォームの作り方">
+      <StepPreview step={step} />
 
-      <nav className="tutorial-steplist" aria-label="手順の一覧">
-        <ol>
-          {steps.map((s, i) => (
-            <li key={i}>
-              <button
-                type="button"
-                aria-current={i === index ? "step" : undefined}
-                onClick={() => selectFromList(i)}
-              >
-                {stepShortTitle(s)}
-              </button>
-            </li>
-          ))}
-        </ol>
-      </nav>
-
-      <div className="tutorial-body">
-        <div className="tutorial-step">
-          <h4 ref={headingRef} tabIndex={-1} className="tutorial-step-heading">
-            {stepShortTitle(step)}
-          </h4>
-          <StepContent key={index} step={step} />
-        </div>
-        <StepPreview step={step} />
+      <div className="tutorial-step">
+        <h3 className="tutorial-step-heading">{stepShortTitle(step)}</h3>
+        <StepContent key={index} step={step} />
       </div>
 
       {/* 端でも disabled にしない。disabled にするとフォーカスが外れてしまうため */}
@@ -86,39 +48,21 @@ export function FormStep({ fields }: FormStepProps) {
         <button type="button" aria-disabled={isFirst} onClick={() => move(-1)}>
           前へ
         </button>
-        <button type="button" aria-disabled={isLast} onClick={() => move(1)}>
-          次へ
+        <span className="tutorial-progress">
+          {index + 1} / {steps.length}
+        </span>
+        {/* 最後の手順でも同じボタンを使い、押したあとのフォーカスを保つ */}
+        <button
+          type="button"
+          className={isLast ? "primary" : undefined}
+          onClick={isLast ? finish.onClick : () => move(1)}
+        >
+          {isLast ? finish.label : "次へ"}
         </button>
       </div>
       <p className="visually-hidden" role="status">
         {announcement}
       </p>
     </section>
-  );
-}
-
-function StepPreview({ step }: { step: TutorialStep }) {
-  let card: ReactNode;
-  if (step.kind === "intro") {
-    card = <FormHeaderPreview title="（ここにタイトルを入力）" />;
-  } else if (step.kind === "question") {
-    const type = GOOGLE_FORM_TYPES[step.fieldType];
-    card = (
-      <FormCardPreview
-        title={step.title}
-        typeLabel={type.formLabel}
-        answerPlaceholder={type.answerPlaceholder}
-        required={step.required}
-        description={step.description}
-      />
-    );
-  } else {
-    return null;
-  }
-  return (
-    <figure className="tutorial-preview">
-      {card}
-      <figcaption>できあがりの見本（実際の画面とは少し違います）</figcaption>
-    </figure>
   );
 }

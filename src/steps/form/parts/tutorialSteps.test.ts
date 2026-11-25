@@ -27,7 +27,7 @@ describe("buildTutorialSteps", () => {
       "check",
       "nextYear",
     ]);
-    expect(steps[0]).toEqual({ kind: "intro", questionCount: 2 });
+    expect(steps[0]).toEqual({ kind: "intro" });
   });
 
   it("質問の手順に、質問文・種類・必須・説明を入れる", () => {

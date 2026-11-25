@@ -133,7 +133,7 @@ function MappingRow({
         </select>
         {missing && (
           <p className="field-error" id={`${id}-missing`}>
-            必須の項目です。列を選ばないと、すべての札でこの項目が空になります。
+            必須の項目です。列を選ばないと、すべてのカードでこの項目が空になります。
           </p>
         )}
       </td>

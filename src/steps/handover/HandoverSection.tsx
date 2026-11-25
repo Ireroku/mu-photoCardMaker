@@ -25,12 +25,9 @@ export function HandoverSection(props: HandoverSectionProps) {
   return (
     <section className="handover" aria-labelledby="handover-title">
       <h2 id="handover-title">来年に引き継ぐ</h2>
-      <p>
-        項目や文字の大きさ、余白、切り取り線の設定をファイルに保存できます。来年はこのファイルを読み込めば、同じ設定で作れます。
-      </p>
       <div className="buttons">
         <button type="button" onClick={() => saveTemplateFile(template)}>
-          この設定をファイルに保存
+          設定をファイルに保存
         </button>
         <button type="button" onClick={() => fileInput.current?.click()}>
           保存した設定を読み込む
@@ -46,6 +43,7 @@ export function HandoverSection(props: HandoverSectionProps) {
           }}
         />
       </div>
+      <p className="note">保存されるもの：項目・文字の大きさ・余白・切り取り線</p>
       {templateFileName && (
         <p className="note" role="status">
           「{templateFileName}」の設定を使っています。

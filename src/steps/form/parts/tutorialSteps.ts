@@ -1,5 +1,5 @@
 // Google フォームの作り方の手順を、テンプレート JSON の fields から組み立てる。
-// 画面（FormStep.tsx）から切り離した純粋なロジックだけを置く。
+// 画面から切り離した純粋なロジックだけを置く。
 
 import type { Field } from "../../../template/schema";
 
@@ -25,7 +25,7 @@ export const GOOGLE_FORM_TYPES: Record<FieldType, GoogleFormType> = {
 };
 
 export type TutorialStep =
-  | { kind: "intro"; questionCount: number }
+  | { kind: "intro" }
   | { kind: "settings" }
   | {
       kind: "question";
@@ -63,7 +63,7 @@ export function buildTutorialSteps(fields: readonly Field[]): TutorialStep[] {
     };
   });
   return [
-    { kind: "intro", questionCount },
+    { kind: "intro" },
     { kind: "settings" },
     ...questions,
     { kind: "publish" },
@@ -77,7 +77,7 @@ export function buildTutorialSteps(fields: readonly Field[]): TutorialStep[] {
 export function stepShortTitle(step: TutorialStep): string {
   switch (step.kind) {
     case "intro":
-      return "フォームを作る";
+      return "空白のフォームを開く";
     case "settings":
       return "フォームの設定";
     case "question":

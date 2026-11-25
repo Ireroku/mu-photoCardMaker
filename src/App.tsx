@@ -39,26 +39,18 @@ export function App() {
     <>
       <header className="app-header screen-only">
         <h1>キャプションボード作成ツール</h1>
-        <p>Google フォームの回答から、展示用のキャプション（札）を A4 に並べて印刷します。</p>
       </header>
 
       <div className="workspace">
         <div className="steps screen-only">
-          <Step
-            id="step-form"
-            number={1}
-            title="フォームを作る"
-            status="初めての人・フォームがまだない人はこちら"
-            open={false}
-          >
-            <FormStep fields={template.fields} />
-            <button
-              type="button"
-              className="next-step"
-              onClick={() => openStep("step-load", "[data-csv-button]")}
-            >
-              回答が集まったら ② 回答を読み込む へ
-            </button>
+          <Step id="step-form" number={1} title="フォームを作る" open={false}>
+            <FormStep
+              fields={template.fields}
+              finish={{
+                label: "② 回答を読み込む へ",
+                onClick: () => openStep("step-load", "[data-csv-button]"),
+              }}
+            />
           </Step>
 
           <Step
@@ -88,9 +80,9 @@ export function App() {
             number={3}
             title="並べて確認"
             open={csv !== null}
-            status={csv ? undefined : "CSV を読み込むと並び順を変えられます"}
+            disabled={csv === null}
           >
-            {csv ? (
+            {csv && (
               <OrderStep
                 csv={csv}
                 fields={template.fields}
@@ -100,8 +92,6 @@ export function App() {
                 overflowCards={overflowCards}
                 dispatch={dispatch}
               />
-            ) : (
-              <p className="note">CSV を読み込むと、ここで札の並び順（展示の順）を変えられます。</p>
             )}
           </Step>
 
@@ -133,11 +123,11 @@ export function App() {
         >
           <div className="preview-toolbar screen-only">
             <p aria-live="polite">
-              {cards.captions.length} 枚の札 → {template.page.size} {pageCount} 枚
+              カード {cards.captions.length} 枚 → {template.page.size} {pageCount} 枚
             </p>
             {overflowCards.size > 0 && (
               <div className="overflow-summary" role="status">
-                <p>{overflowCards.size} 枚のカードで文字が収まりません（端が「…」で切れます）：</p>
+                <p>{overflowCards.size} 枚のカードで文字が収まらず、省略されます：</p>
                 <ul>
                   {overflowLinks.map((i) => (
                     <li key={i}>
@@ -150,18 +140,14 @@ export function App() {
             )}
             {cardFits.failed && (
               <p className="overflow-summary" role="status">
-                文字の自動縮小ができませんでした。長い文字は端が「…」で切れます。
+                文字の自動縮小ができませんでした。長い文字は省略されます。
               </p>
             )}
           </div>
-          {mapped.isSample && (
-            <p className="sample-band screen-only">
-              見本 — CSV を読み込むと、本物の札に置き換わります
-            </p>
-          )}
+          {mapped.isSample && <p className="sample-band screen-only">見本</p>}
           <div className="preview" ref={preview} data-sample={mapped.isSample || undefined}>
             {pageCount === 0 ? (
-              <p className="preview-empty screen-only">札がありません</p>
+              <p className="preview-empty screen-only">カードがありません</p>
             ) : (
               <Sheets
                 template={template}

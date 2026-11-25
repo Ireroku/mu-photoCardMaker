@@ -21,7 +21,7 @@ type PrintStepProps = {
   dispatch: Dispatch<AppAction>;
 };
 
-const TOO_SMALL = "この値だと札が小さくなりすぎます。";
+const TOO_SMALL = "この値だとカードが小さくなりすぎます。";
 
 export function PrintStep(props: PrintStepProps) {
   const { template, isSample, savedBorderPt, cardCount, overflowCount, fitsReady, dispatch } =
@@ -59,7 +59,7 @@ export function PrintStep(props: PrintStepProps) {
       >
         {isSample ? "見本を印刷 / PDF に保存" : "印刷 / PDF に保存"}
       </button>
-      {cardCount === 0 && <p className="note">札が 1 枚もないので印刷できません。</p>}
+      {cardCount === 0 && <p className="note">カードが 1 枚もないので印刷できません。</p>}
 
       <details className="adjust">
         <summary>印刷がずれたとき・切り取り線を変えたいとき</summary>
@@ -123,11 +123,11 @@ export function PrintStep(props: PrintStepProps) {
           </li>
         </ol>
         {overflowCount > 0 && (
-          <p className="field-error">
-            {overflowCount} 枚の札で文字が収まらず、端が「…」で切れます。
-          </p>
+          <p className="field-error">{overflowCount} 枚のカードで文字が収まらず、省略されます。</p>
         )}
-        {isSample && <p className="note">今は見本の札です。各ページに「見本」と印刷されます。</p>}
+        {isSample && (
+          <p className="note">今は見本のカードです。各ページに「見本」と印刷されます。</p>
+        )}
         <form method="dialog" className="dialog-buttons">
           <button value="print" className="primary" disabled={!fitsReady} autoFocus>
             {fitsReady ? "この設定で印刷する" : "文字の大きさを計算中…"}

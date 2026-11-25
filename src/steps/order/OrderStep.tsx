@@ -122,14 +122,14 @@ export function OrderStep(props: OrderStepProps) {
         </button>
       </div>
       <p className="note">
-        数字の入った列（「並び順」など）を選ぶと、小さい順に並べます。数字でない値や空欄の札は最後に回ります。並べたあと、下の一覧で手で動かすこともできます。
+        数字の入った列（「並び順」など）を選ぶと、小さい順に並べます。数字でない値や空欄のカードは最後に回ります。並べたあと、下の一覧で手で動かすこともできます。
       </p>
 
       <ol
         className="order-list"
         ref={list}
         data-dragging={drag.state ? "" : undefined}
-        aria-label="札の並び順"
+        aria-label="展示順"
       >
         {captions.map((caption, index) => {
           const row = rows[index]!;

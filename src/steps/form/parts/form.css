@@ -23,9 +23,7 @@
   line-height: 1.7;
 }
 
-.tutorial h3,
-.tutorial h4,
-.tutorial h5 {
+.tutorial h3 {
   margin: 0;
   line-height: 1.4;
 }
@@ -46,8 +44,7 @@
   background: var(--tutorial-surface);
 }
 
-.tutorial :where(button):focus-visible,
-.tutorial-step-heading:focus-visible {
+.tutorial :where(button):focus-visible {
   outline: 3px solid var(--tutorial-accent);
   outline-offset: 2px;
 }
@@ -57,51 +54,13 @@
   opacity: 0.5;
 }
 
-/* 手順の一覧 */
-.tutorial-steplist ol {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tutorial-steplist button {
-  text-align: start;
-}
-
-.tutorial-steplist button[aria-current="step"] {
-  border-color: var(--tutorial-accent);
-  background: var(--tutorial-accent);
-  color: #fff;
-  font-weight: bold;
-}
-
-.tutorial-steplist button[aria-current="step"] /* 手順の本文と見本。狭い画面では縦、広い画面では横に並べる */
-.tutorial-body {
-  display: grid;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-@container (min-width: 48rem) {
-  .tutorial-body {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
-  }
-}
-
 .tutorial-step {
   display: grid;
   gap: 0.75rem;
 }
 
 .tutorial-step-heading {
-  scroll-margin-block-start: 1rem;
-}
-
-.tutorial-step h5 {
-  margin-block-start: 0.5rem;
+  font-size: 1.05rem;
 }
 
 .tutorial-step p {
@@ -168,28 +127,38 @@
 /* 前へ・次へ */
 .tutorial-nav {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.tutorial-progress {
+  color: var(--tutorial-muted);
+  font-size: 0.9rem;
+}
+
+.tutorial-alt summary {
+  cursor: pointer;
+  color: var(--tutorial-muted);
+}
+
+.tutorial-alt[open] summary {
+  margin-block-end: 0.5rem;
 }
 
 .tutorial-nav button {
   min-inline-size: 6rem;
 }
 
-/* Google フォームの見本（ざっくりした再現） */
+/* Google フォームの見本（ざっくりした再現）。どの手順でも同じ場所・同じ高さの枠に出し、本文と分ける */
 .tutorial-preview {
   display: grid;
-  gap: 0.5rem;
-  margin: 0;
+  align-content: center;
+  min-block-size: 9rem;
   padding: 1rem;
+  border: 1px solid var(--tutorial-border);
   border-radius: 0.5rem;
   background: var(--gf-bg);
-}
-
-.tutorial-preview figcaption {
-  color: var(--tutorial-muted);
-  font-size: 0.8rem;
-  text-align: center;
 }
 
 .gf-card {
@@ -319,6 +288,76 @@
   inset-inline-end: 0.1rem;
   border-color: var(--gf-accent);
   background: var(--gf-accent);
+}
+
+.gf-card-heading {
+  font-weight: bold;
+}
+
+.gf-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* 押すところ。色だけに頼らず枠でも示す */
+.gf-highlight {
+  outline: 2px solid var(--gf-accent);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--gf-accent) 15%, #fff);
+  font-weight: bold;
+}
+
+.gf-toolbar,
+.gf-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dadce0;
+  border-radius: 0.5rem;
+  background: var(--gf-card);
+  color: var(--gf-text);
+}
+
+.gf-menu-header {
+  justify-self: stretch;
+}
+
+.gf-toolbar-button {
+  padding: 0.25rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.gf-tab {
+  margin-inline-end: auto;
+  padding-block-end: 0.1rem;
+  border-block-end: 3px solid var(--gf-accent);
+}
+
+.gf-menu-wrap {
+  display: grid;
+  justify-items: end;
+  gap: 0.25rem;
+}
+
+.gf-menu {
+  min-inline-size: 14rem;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  border: 1px solid #dadce0;
+  border-radius: 0.25rem;
+  background: var(--gf-card);
+  color: var(--gf-text);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+  font-size: 0.9rem;
+}
+
+.gf-menu li {
+  padding: 0.35rem 1rem;
 }
 
 .gf-more {
