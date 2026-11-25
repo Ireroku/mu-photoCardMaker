@@ -81,7 +81,7 @@ select {
 }
 
 /* 画面には出さず、読み上げだけに使う文 */
-.visually-hidden:where(:not(:focus-within, :active)) {
+.visually-hidden {
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
