@@ -65,12 +65,26 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 
 | 知りたいこと | 読む場所 |
 |---|---|
-| 使い方、開発環境の準備、ビルド、テンプレート JSON の仕様、ディレクトリ構成 | [README.md](./README.md) |
+| 使い方、テンプレート JSON の仕様、公開の手順 | [README.md](./README.md) |
 | 画面の状態（テンプレート・CSV・列の対応・並び順）と、そこから求める札 | [src/app/state.ts](./src/app/state.ts)、[src/app/derive.ts](./src/app/derive.ts) |
 | CSV の読み込みと列の対応付け（同じ見出しの列は左から空でない値を使う） | [src/csv/](./src/csv/) |
 | 文字の自動縮小（計算は `fit.ts`・`autoFit.ts`、測るのは `measure.ts`・`useCardFits.ts`） | [src/print/](./src/print/) |
 | テンプレート JSON の型と検証 | [src/template/schema.ts](./src/template/schema.ts) |
 | 再現の目標にする元のテンプレート | [reference/](./reference/README.md)（中身は Git で追跡しない） |
+
+機能ごとにフォルダを分け、同じフォルダの中で純粋なロジック（`*.ts`）と画面（`*.tsx`）を分ける。
+
+```
+src/
+  app/        画面全体（手順①〜④、来年に引き継ぐ）、状態（state.ts）、状態から札を求める計算（derive.ts）、並び順（order.ts）
+  csv/        文字コードの判別、CSV の読み込みと確かめ、列の対応付け、テスト用の fixtures/
+  tutorial/   Google フォームの作り方の手順
+  print/      ページとカード、印刷用 CSS、文字の自動縮小（fit.ts、autoFit.ts、measure.ts）
+  template/   テンプレート JSON の型と検証（zod）、既定のテンプレート（default.json）
+  fonts/      同梱するフォントの一覧
+public/licenses/  フォントのライセンス文
+vite/             ビルド用のプラグイン
+```
 
 ## コマンド
 
