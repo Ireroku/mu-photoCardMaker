@@ -5,10 +5,9 @@ describe("TEMPLATE_PRESETS", () => {
   it("ファイル名の順に並び、先頭が最初に選ばれる", () => {
     expect(TEMPLATE_PRESETS.map((p) => p.id)).toEqual([
       "1-standard",
-      "2-lens",
-      "3-simple",
-      "4-standard-2-lines",
-      "5-lens-2-lines",
+      "2-simple",
+      "3-standard-2-lines",
+      "4-lens-2-lines",
     ]);
     expect(DEFAULT_PRESET.template.name).toBe("標準");
   });
