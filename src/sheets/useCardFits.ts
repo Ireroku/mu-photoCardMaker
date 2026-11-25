@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fontFamilyCss } from "../fonts/fonts";
 import type { Template } from "../template/schema";
-import { captionText, fitCards, textItems, textWidthMm, type CardFit } from "./autoFit";
+import { captionText, fitCards, textBoxMm, textItems, type CardFit } from "./autoFit";
 import type { Caption } from "./geometry";
 import { ensureFontLoaded, measureTextMm, type FontSpec } from "./parts/measure";
 
@@ -54,7 +54,7 @@ export function useCardFits(template: Template, captions: readonly Caption[]): C
           ensureFontLoaded({ family, weight }, text).catch(() => false),
         ),
       );
-      return fitCards(template.layout, captions, textWidthMm(template), (text, item, pt) =>
+      return fitCards(template.layout, captions, textBoxMm(template), (text, item, pt) =>
         measureTextMm(text, fontOf(item.bold), pt),
       );
     };

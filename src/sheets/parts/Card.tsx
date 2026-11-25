@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { LayoutEntry, LineItem, SectionItem } from "../../template/schema";
-import { captionText, hasOverflow, textItemId, type CardFit } from "../autoFit";
+import { captionText, hasOverflow, TEXT_LINE_HEIGHT, textItemId, type CardFit } from "../autoFit";
 import type { Caption } from "../geometry";
 
 type CardProps = {
@@ -62,10 +62,14 @@ function Item({
 }) {
   if (item.kind === "line") return <Line line={item} />;
   const text = captionText(caption, item.field);
-  const style: CSSProperties = {
+  const maxLines = item.max_lines ?? 1;
+  const style = {
     fontSize: `${sizePt ?? item.size_pt}pt`,
     fontWeight: item.bold ? 700 : 400,
-  };
+    lineHeight: TEXT_LINE_HEIGHT,
+    // 折り返す項目は、この行の数を超えた分を「…」にする（sheets.css の .card-text[data-wrap]）
+    "--max-lines": maxLines,
+  } as CSSProperties;
   // 空の項目も 1 行分の高さを取る。ほかの行の位置がカードごとにずれないようにするため
   if (text === "") {
     return (
@@ -75,7 +79,7 @@ function Item({
     );
   }
   return (
-    <p className="card-text" style={style}>
+    <p className="card-text" style={style} data-wrap={maxLines > 1 || undefined}>
       {text}
     </p>
   );

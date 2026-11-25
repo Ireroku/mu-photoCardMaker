@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { MAX_TEXT_LINES } from "../settings";
 import defaultJson from "./parts/default.json";
 import { formatPath, parseTemplate, stringifyTemplate, validateTemplate } from "./parse";
 
@@ -61,6 +62,16 @@ describe("parseTemplate", () => {
     const result = parseTemplate(modified((t) => (t.layout[0].items[0].min_size_pt = 18)));
     if (!result.ok) throw new Error(result.errors.join("\n"));
     expect(result.template.layout[0]).toMatchObject({ items: [{ min_size_pt: 18 }] });
+  });
+
+  it("max_lines は 1 から MAX_TEXT_LINES までの整数だけを受け付ける", () => {
+    const withLines = (n: number) =>
+      parseTemplate(modified((t) => (t.layout[0].items[0].max_lines = n))).ok;
+    expect(withLines(2)).toBe(true);
+    expect(withLines(MAX_TEXT_LINES)).toBe(true);
+    expect(withLines(0)).toBe(false);
+    expect(withLines(1.5)).toBe(false);
+    expect(withLines(MAX_TEXT_LINES + 1)).toBe(false);
   });
 
   it("min_size_pt が size_pt より大きければ知らせる", () => {

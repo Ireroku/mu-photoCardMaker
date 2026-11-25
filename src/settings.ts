@@ -12,6 +12,9 @@ export const ABSOLUTE_MIN_PT = 6;
 /** 縮めるときの刻み（pt） */
 export const DEFAULT_STEP_PT = 0.5;
 
+/** テンプレートの max_lines（折り返して使える行の数）に書ける最大の値 */
+export const MAX_TEXT_LINES = 3;
+
 /** 測った幅と実際の描画のずれを吸収する余裕（mm）。sheets/parts/measure.ts の注意を参照 */
 export const FIT_SAFETY_MM = 0.5;
 

@@ -53,7 +53,7 @@ Google フォームで集めた作品の情報から、写真展示のキャプ�
   "layout": [
     {
       "kind": "section",
-      "items": [{ "kind": "text", "field": "title", "size_pt": 24, "bold": true }]
+      "items": [{ "kind": "text", "field": "title", "size_pt": 24, "max_lines": 2, "bold": true }]
     },
     { "kind": "line", "width_percent": 72, "thickness_pt": 1 },
     {
@@ -77,7 +77,7 @@ Google フォームで集めた作品の情報から、写真展示のキャプ�
 | `font` | フォント。`"noto-sans-jp"` か `"zen-maru-gothic"` |
 | `fields` | フォームの質問。`label` は質問文で、CSV の列を探すのにも使う。`required` はフォームで必須にするか。`hint` を書くと、手順①で質問の「説明」に貼る文として出る（省略可） |
 | `layout` | カードに載せる文字と線の並べ方。上から縦に積み、中央にそろえる。`section` は段、`line` は横線 |
-| `items` | 段の中に並べる文字。`field` に `fields` の `key` を書く。長くて入らない時は `min_size_pt` まで縮める（省くと少し小さくなるまで。割合は `settings.ts` の `DEFAULT_MIN_RATIO`） |
+| `items` | 段の中に並べる文字。`field` に `fields` の `key` を書く。長くて入らない時は `min_size_pt` まで縮める（省くと少し小さくなるまで。割合は `settings.ts` の `DEFAULT_MIN_RATIO`）。`max_lines` を書くと、縮めても入らない時にその行の数まで折り返す（省くと 1 行で、入らない分は「…」） |
 
 - 省略できる項目は [`src/template/schema.ts`](./src/template/schema.ts)、余白や罫線の太さの範囲などの値は [`src/settings.ts`](./src/settings.ts) にあります
 - 書き間違えると、読み込んだ時に画面にエラーが出ます

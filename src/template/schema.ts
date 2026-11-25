@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { FONT_IDS } from "../fonts/fonts";
-import { BORDER_PT, MARGIN_MM } from "../settings";
+import { BORDER_PT, MARGIN_MM, MAX_TEXT_LINES } from "../settings";
 import { normalizeLabel } from "../shared/normalize";
 import { MM_PER_PT } from "../shared/units";
 import { sheetGeometry } from "../sheets/geometry";
@@ -66,6 +66,8 @@ const textItemSchema = z.strictObject({
   size_pt: positiveUpTo(200),
   /** 長くて収まらないとき、この大きさまで縮める。省略時は settings.ts の DEFAULT_MIN_RATIO から求める（sheets/parts/fit.ts の resolveMinPt） */
   min_size_pt: positiveUpTo(200).optional(),
+  /** min_size_pt まで縮めても 1 行に収まらないとき、この行の数まで折り返す。省略時は 1（折り返さない） */
+  max_lines: z.number().int().min(1).max(MAX_TEXT_LINES).optional(),
   bold: z.boolean().optional(),
 });
 
