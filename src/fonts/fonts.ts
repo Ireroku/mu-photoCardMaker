@@ -1,4 +1,5 @@
-// 同梱するフォントの一覧。テンプレート JSON の "font" には、ここの id を書く。
+// カードに使う、同梱するフォントの一覧。テンプレート JSON の "font" には、ここの id を書く。
+// 画面の見出しのフォント（RocknRoll One）はカードには使わないので、ここではなく App.css に置いている。
 //
 // フォントを足す手順（例：@fontsource/kosugi-maru）:
 //   1. npm install @fontsource/kosugi-maru

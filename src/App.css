@@ -99,6 +99,25 @@ select {
   color: var(--ui-muted);
 }
 
+/*
+ * 画面の見出しのフォント（RocknRoll One、SIL Open Font License 1.1）。
+ * 見出しに使う文字だけを入れた小さなファイルで、ほかの文字は OS のフォントで出る。
+ * 見出しの文字を変えたときは、次の URL の text= に見出しの文字をすべて並べて開き、
+ * 出てきた CSS の src の woff2 をダウンロードして fonts/rocknroll-one-headings.woff2 を置き換える。
+ * https://fonts.googleapis.com/css2?family=RocknRoll+One&text=キャプションボード作成ツールフォームを作る回答を読み込む並べて確認印刷
+ */
+@font-face {
+  font-family: "RocknRoll One Headings";
+  font-display: swap;
+  src: url("./fonts/rocknroll-one-headings.woff2") format("woff2");
+}
+
+.app-header h1,
+.step-title {
+  font-family: "RocknRoll One Headings", system-ui, sans-serif;
+  font-weight: 400;
+}
+
 /* 見出し */
 .app-header {
   padding: 12px 16px;
