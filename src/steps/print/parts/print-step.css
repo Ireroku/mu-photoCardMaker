@@ -1,6 +1,6 @@
-/* 手順④「印刷」の見た目 */
+/* 手順⑤「印刷」の見た目 */
 
-/* ④ 印刷の調整 */
+/* ⑤ 印刷の調整 */
 .adjust {
   inline-size: 100%;
 }
@@ -14,6 +14,11 @@
   display: grid;
   gap: 8px;
   padding-block-start: 8px;
+}
+
+/* 「この設定をテンプレート JSON として保存」を、文字の幅にする */
+.adjust-body > button {
+  justify-self: start;
 }
 
 .number-field {

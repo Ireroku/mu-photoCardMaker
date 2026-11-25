@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { MAX_TEXT_LINES } from "../settings";
-import defaultJson from "./parts/default.json";
+import defaultJson from "./parts/presets/1-standard.json";
 import { formatPath, parseTemplate, stringifyTemplate, validateTemplate } from "./parse";
 
 // 壊れた JSON をわざと作るため、型を付けずに書き換える
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LooseJson = any;
 
-/** default.json を深くコピーし、一部を書き換えた JSON 文字列を作る */
+/** 1-standard.json を深くコピーし、一部を書き換えた JSON 文字列を作る */
 function modified(edit: (t: LooseJson) => void): string {
   const t: LooseJson = structuredClone(defaultJson);
   edit(t);
@@ -21,7 +21,7 @@ function errorsOf(text: string): string[] {
 }
 
 describe("parseTemplate", () => {
-  it("default.json を受け入れ、省略できる値を埋める", () => {
+  it("1-standard.json を受け入れ、省略できる値を埋める", () => {
     const result = parseTemplate(JSON.stringify(defaultJson));
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -35,7 +35,7 @@ describe("parseTemplate", () => {
 
   it("書き出した JSON をもう一度読める", () => {
     const first = parseTemplate(JSON.stringify(defaultJson));
-    if (!first.ok) throw new Error("default.json が通らない");
+    if (!first.ok) throw new Error("1-standard.json が通らない");
     const again = parseTemplate(stringifyTemplate(first.template));
     expect(again).toEqual(first);
   });

@@ -1,4 +1,4 @@
-// 手順④：印刷する。印刷の前に、印刷の画面で確かめる設定を短い一覧で見せる。
+// 手順⑤：印刷する。印刷の前に、印刷の画面で確かめる設定を短い一覧で見せる。
 // 余白と切り取り線の調整は「印刷がずれたとき」の中にしまっておく（既定のままでよい人が多いため）。
 
 import { useRef, type Dispatch } from "react";
@@ -6,11 +6,14 @@ import { BORDER_PT, MARGIN_MM } from "../../settings";
 import { sheetGeometry } from "../../sheets/geometry";
 import { adjustTemplate, type AppAction, type TemplateAdjustment } from "../../state/state";
 import type { Template } from "../../template/schema";
+import { saveTemplateFile } from "../../template/templateFile";
 import { NumberField } from "./parts/NumberField";
 import "./parts/print-step.css";
 
 type PrintStepProps = {
   template: Template;
+  /** 今のテンプレートの名前。保存するファイルの名前に使う */
+  templateLabel: string;
   isSample: boolean;
   savedBorderPt: number;
   cardCount: number;
@@ -24,8 +27,16 @@ type PrintStepProps = {
 const TOO_SMALL = "この値だとカードが小さくなりすぎます。";
 
 export function PrintStep(props: PrintStepProps) {
-  const { template, isSample, savedBorderPt, cardCount, overflowMessage, fitsReady, dispatch } =
-    props;
+  const {
+    template,
+    templateLabel,
+    isSample,
+    savedBorderPt,
+    cardCount,
+    overflowMessage,
+    fitsReady,
+    dispatch,
+  } = props;
   const dialog = useRef<HTMLDialogElement>(null);
   const { card } = sheetGeometry(template);
   const cutLines = template.card.border_pt > 0;
@@ -94,8 +105,14 @@ export function PrintStep(props: PrintStepProps) {
             onCommit={(pt) => tryAdjust({ border_pt: pt }, { type: "borderChanged", pt })}
           />
           <p className="note">
-            カード 1 枚は 約 {card.width.toFixed(1)} × {card.height.toFixed(1)} mm
-            です。ここで変えた値は、ページの下の「設定ファイル」でダウンロードするファイルにも入ります。
+            カード 1 枚は 約 {card.width.toFixed(1)} × {card.height.toFixed(1)} mm です。
+          </p>
+          <button type="button" onClick={() => saveTemplateFile(template, templateLabel)}>
+            この設定をテンプレート JSON として保存
+          </button>
+          <p className="note">
+            保存したファイルは、手順①の「テンプレート JSON
+            を読み込む」で次から使えます。質問・文字の大きさ・余白・切り取り線が入ります。
           </p>
         </div>
       </details>

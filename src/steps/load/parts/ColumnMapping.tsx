@@ -1,4 +1,4 @@
-// 手順②の、フォームの質問と CSV の列の対応の表。
+// 手順③の、フォームの質問と CSV の列の対応の表。
 
 import { useId, useState, type Dispatch } from "react";
 import type { LoadedCsv } from "../../../csv/loadCsvFile";

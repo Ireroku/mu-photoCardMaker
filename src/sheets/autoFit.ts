@@ -7,6 +7,8 @@ import type { LayoutEntry, SectionItem, Template, TextItem } from "../template/s
 import { sheetGeometry, type Caption } from "./geometry";
 import { fitFontSize, resolveMinPt, type FitResult } from "./parts/fit";
 
+export { resolveMinPt };
+
 /** layout の中の文字の項目を指す名前。「段の番号.段の中の番号」 */
 export type TextItemId = `${number}.${number}`;
 

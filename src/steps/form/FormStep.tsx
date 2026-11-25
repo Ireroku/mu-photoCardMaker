@@ -1,4 +1,4 @@
-// 手順①：Google フォームの作り方を、質問 1 つずつ案内する画面。
+// 手順②：Google フォームの作り方を、質問 1 つずつ案内する画面。
 // 手順の中身は parts/tutorialSteps.ts が fields から組み立て、手順ごとの文は parts/StepContent.tsx、
 // 見本は parts/StepPreview.tsx に置く。
 

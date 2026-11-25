@@ -86,7 +86,7 @@ describe("appReducer と、状態から求めるカード", () => {
     );
   });
 
-  it("同じ項目のテンプレートを読み込んでも、手で選んだ列を残す", () => {
+  it("テンプレートを替えても、同じ key の項目は今の列を残す（質問の文が違っても）", () => {
     const edited = run(
       { type: "csvLoaded", csv: CSV },
       { type: "columnAssigned", key: "place", column: 0 },
@@ -94,7 +94,7 @@ describe("appReducer と、状態から求めるカード", () => {
     const same = appReducer(edited, {
       type: "templateLoaded",
       template: { ...edited.template },
-      fileName: "t.json",
+      source: { fileName: "t.json" },
     });
     expect(same.columns.place).toBe(0);
     const fields = edited.template.fields.map((f) =>
@@ -103,9 +103,9 @@ describe("appReducer と、状態から求めるカード", () => {
     const changed = appReducer(edited, {
       type: "templateLoaded",
       template: { ...edited.template, fields },
-      fileName: "t.json",
+      source: { presetId: "x" },
     });
-    expect(changed.columns.place).toBeNull();
+    expect(changed.columns.place).toBe(0);
   });
 
   it("並び順の列が重複していれば、左から空でない値で並べる", () => {

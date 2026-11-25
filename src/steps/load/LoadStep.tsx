@@ -1,4 +1,4 @@
-// 手順②：回答の CSV を読み込み、列とフォームの質問の対応を確かめる。
+// 手順③：回答の CSV を読み込み、列とフォームの質問の対応を確かめる。
 
 import { useEffect, useRef, type Dispatch } from "react";
 import type { LoadedCsv } from "../../csv/loadCsvFile";

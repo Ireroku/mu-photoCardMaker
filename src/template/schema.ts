@@ -90,6 +90,8 @@ const layoutEntrySchema = z.discriminatedUnion("kind", [sectionSchema, lineSchem
 
 const baseTemplateSchema = z.strictObject({
   version: z.literal(1),
+  /** 画面に出すテンプレートの名前。ダウンロードするファイルの名前にも使う */
+  name: z.string().trim().min(1).optional(),
   page: pageSchema,
   grid: gridSchema,
   card: cardSchema,

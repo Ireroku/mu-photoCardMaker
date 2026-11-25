@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_TEMPLATE } from "../../../template/default";
+import { DEFAULT_PRESET } from "../../../template/presets";
 import type { Field } from "../../../template/schema";
 import { buildTutorialSteps, GOOGLE_FORM_TYPES, stepShortTitle } from "./tutorialSteps";
 
@@ -73,7 +73,7 @@ describe("buildTutorialSteps", () => {
 
 describe("GOOGLE_FORM_TYPES", () => {
   it("既定のテンプレートの fields の種類すべてに、名前と回答欄の文字がある", () => {
-    for (const field of DEFAULT_TEMPLATE.fields) {
+    for (const field of DEFAULT_PRESET.template.fields) {
       const entry = GOOGLE_FORM_TYPES[field.type];
       expect(entry.formLabel).not.toBe("");
       expect(entry.answerPlaceholder).not.toBe("");

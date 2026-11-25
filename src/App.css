@@ -104,7 +104,7 @@ select {
  * 見出しに使う文字だけを入れた小さなファイルで、ほかの文字は OS のフォントで出る。
  * 見出しの文字を変えたときは、次の URL の text= に見出しの文字をすべて並べて開き、
  * 出てきた CSS の src の woff2 をダウンロードして fonts/rocknroll-one-headings.woff2 を置き換える。
- * https://fonts.googleapis.com/css2?family=RocknRoll+One&text=キャプションボード作成ツールフォームを作る回答を読み込む並べて確認印刷
+ * https://fonts.googleapis.com/css2?family=RocknRoll+One&text=キャプションボード作成ツールテンプレートを選ぶフォームを作る回答を読み込む並べて確認印刷
  */
 @font-face {
   font-family: "RocknRoll One Headings";
@@ -245,7 +245,7 @@ select {
   font-size: 1.05rem;
 }
 
-/* まだ開けない手順（CSV を読み込む前の手順③） */
+/* まだ開けない手順（CSV を読み込む前の手順④） */
 .step[data-disabled] > summary {
   cursor: default;
   opacity: 0.45;
@@ -338,6 +338,12 @@ select {
 
 .preview-toolbar p {
   margin: 0;
+}
+
+/* 今のテンプレートの名前。枚数より目立たせない */
+.preview-template {
+  margin-inline-start: 1em;
+  color: var(--ui-muted);
 }
 
 .overflow-summary {

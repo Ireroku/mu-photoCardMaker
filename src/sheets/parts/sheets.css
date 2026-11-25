@@ -171,3 +171,10 @@
     display: none;
   }
 }
+
+/* カード 1 枚の見本（CardSample.tsx）。大きさは CardSample.tsx が入れ、縮める倍率は使う側の CSS で決める */
+.card-sample {
+  display: grid;
+  color: black;
+  background: white;
+}

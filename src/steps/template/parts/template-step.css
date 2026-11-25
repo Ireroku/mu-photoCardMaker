@@ -1,0 +1,75 @@
+/* 手順①「テンプレートを選ぶ」の見た目 */
+
+.template-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 10px;
+  inline-size: 100%;
+}
+
+/* 読み込む枠は button なので、App.css の button の見た目に勝つよう .template-gallery を前に付ける */
+.template-gallery .template-tile {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: 8px;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+}
+
+.template-tile:hover {
+  border-color: #999;
+}
+
+.template-tile:has(:checked),
+.template-tile[data-selected] {
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 1px var(--ui-accent);
+}
+
+.template-tile:has(:focus-visible),
+.template-tile:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+/* 見本のカードは印刷と同じ大きさ（約 96 mm 幅）で描くので、枠に収まるよう縮める */
+.template-sample {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--ui-backdrop);
+  border-radius: 4px;
+}
+
+.template-sample .card-sample {
+  zoom: 0.4;
+}
+
+.template-name {
+  font-weight: 700;
+}
+
+.template-tile:has(:checked) .template-name::before {
+  content: "✓ ";
+  color: var(--ui-accent);
+}
+
+.template-fields {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--ui-muted);
+}
+
+/* 読み込む枠は、見本の代わりに点線で囲む */
+.template-gallery .template-load {
+  align-content: center;
+  min-block-size: 8rem;
+  text-align: center;
+  border-style: dashed;
+}

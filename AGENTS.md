@@ -78,25 +78,26 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 | 使い方、テンプレート JSON の仕様、公開の手順 | [README.md](./README.md) |
 | 値を変えたい（文字の縮め方、余白や罫線の範囲、ファイル名、CSV の大きさの上限など） | まず [src/settings.ts](./src/settings.ts) |
 | 画面全体の組み立て | [src/App.tsx](./src/App.tsx)（画面）、[src/parts/useCaptionBoard.ts](./src/parts/useCaptionBoard.ts)（状態と、そこから求めるもの） |
-| 手順①〜④と「設定ファイル」の画面 | [src/steps/](./src/steps/) |
+| 手順①〜⑤の画面 | [src/steps/](./src/steps/) |
 | 画面の状態（テンプレート・CSV・列の対応・並び順）と、そこから求めるカード | [src/state/state.ts](./src/state/state.ts)、[src/state/derive.ts](./src/state/derive.ts) |
 | CSV の読み込みと列の対応付け（同じ見出しの列は左から空でない値を使う） | [src/csv/](./src/csv/) |
 | 文字の自動縮小（計算は `fit.ts`・`autoFit.ts`、測るのは `measure.ts`・`useCardFits.ts`） | [src/sheets/](./src/sheets/) |
 | テンプレート JSON の型と検証 | [src/template/schema.ts](./src/template/schema.ts) |
+| 手順①に並ぶテンプレート（番号の順に並び、先頭が最初に選ばれる） | [src/template/parts/presets/](./src/template/parts/presets/) |
 | 再現の目標にする元のテンプレート | [reference/](./reference/README.md)（中身は Git で追跡しない） |
 
 置き方の決まりは「[コードの置き方](#コードの置き方)」にある。
 
 ```
 src/
-  App.tsx     画面全体（手順①〜④と設定ファイルを並べる）。App.css は画面全体の配置とどの手順でも使う見た目
+  App.tsx     画面全体（手順①〜⑤を並べる）。App.css は画面全体の配置とどの手順でも使う見た目
   settings.ts 使う人の都合で変えたくなる値の一覧
   parts/      App だけが使う部品（手順の枠、プレビューの縮小、画面全体の状態をまとめるフック）
-  steps/      手順ごとの画面。form/（①フォームを作る）、load/（②回答を読み込む）、order/（③並べて確認）、print/（④印刷）、handover/（設定ファイル）
+  steps/      手順ごとの画面。template/（①テンプレートを選ぶ）、form/（②フォームを作る）、load/（③回答を読み込む）、order/（④並べて確認）、print/（⑤印刷）
   state/      画面の状態（state.ts）、状態からカードを求める計算（derive.ts）、並び順（parts/order.ts）
   csv/        CSV の読み込み（loadCsvFile.ts）と列の対応付け（match.ts）、読み込んだ CSV の警告。文字コードの判別・パース・確かめは parts/、テスト用の fixtures/
-  sheets/     印刷するページとカード、印刷用 CSS、文字の自動縮小（autoFit.ts、parts/fit.ts、parts/measure.ts）
-  template/   テンプレート JSON の型と検証（zod）、既定のテンプレート（parts/default.json）
+  sheets/     印刷するページとカード、テンプレートを選ぶ画面の見本のカード（CardSample.tsx）、印刷用 CSS、文字の自動縮小（autoFit.ts、parts/fit.ts、parts/measure.ts）
+  template/   テンプレート JSON の型と検証（zod）、ファイルの読み込みと保存（templateFile.ts）、用意したテンプレート（presets.ts、parts/presets/）
   fonts/      同梱するフォントの一覧
   shared/     関係のない複数の場所から使うもの（見出しの正規化、ファイルのドロップ、単位の換算など）
 public/licenses/  フォントのライセンス文

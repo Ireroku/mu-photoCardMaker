@@ -4,7 +4,7 @@ import { REDOWNLOAD_ADVICE } from "./parts/check";
 
 /**
  * 読み込めたが確かめてほしいこと（文字化けの疑い、引用符の閉じ忘れ、同じ見出しの列など）。
- * 1 つが 1 文。手順②の中と、閉じた手順②の 1 行の両方で使う
+ * 1 つが 1 文。手順③の中と、閉じた手順③の 1 行の両方で使う
  */
 export function csvIssues(csv: LoadedCsv, mapping: ColumnMapping): string[] {
   const issues: string[] = [];

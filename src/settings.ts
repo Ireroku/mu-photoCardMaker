@@ -20,13 +20,13 @@ export const FIT_SAFETY_MM = 0.5;
 
 // ---- ファイルと列の名前 ----
 
-/** 「設定ファイル」でダウンロードするファイルの名前の頭。後ろに年と .json が付く */
-export const TEMPLATE_FILE_PREFIX = "caption-template-";
+/** 手順⑤で保存するテンプレート JSON のファイルの名前の頭。後ろにテンプレートの名前と .json が付く */
+export const TEMPLATE_FILE_PREFIX = "テンプレート-";
 
 /** この見出しの列が CSV にあれば、読み込んだときにその列で並べる */
 export const ORDER_HEADER = "並び順";
 
-// ---- 余白と切り取り線の値の範囲（テンプレートの検証と、手順④の入力欄の両方で使う） ----
+// ---- 余白と切り取り線の値の範囲（テンプレートの検証と、手順⑤の入力欄の両方で使う） ----
 
 /** 用紙の端からカードの並びまでの余白（mm） */
 export const MARGIN_MM = { min: 0, max: 50, step: 0.5 } as const;
@@ -42,7 +42,7 @@ export const DEFAULT_BORDER_PT = 1;
 /** プレビューの「収まりません」の一覧に出すリンクの数。残りは件数だけ出す */
 export const MAX_OVERFLOW_LINKS = 10;
 
-/** 手順②の列の選択肢に出す、回答の例の長さ（文字数） */
+/** 手順③の列の選択肢に出す、回答の例の長さ（文字数） */
 export const EXAMPLE_LENGTH = 16;
 
 /** テンプレートを読み込めなかったときに出すエラーの最大数。残りは件数だけ出す */

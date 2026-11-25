@@ -4,15 +4,15 @@ import type { LoadedCsv } from "../csv/loadCsvFile";
 import { columnValues, matchColumns, type ColumnAssignments } from "../csv/match";
 import { DEFAULT_BORDER_PT, ORDER_HEADER } from "../settings";
 import { normalizeLabel } from "../shared/normalize";
-import { DEFAULT_TEMPLATE } from "../template/default";
+import { DEFAULT_PRESET } from "../template/presets";
 import { validateTemplate } from "../template/parse";
 import type { Field, Template } from "../template/schema";
 import { moveItem, orderByKeys } from "./parts/order";
 
 export type AppState = {
   template: Template;
-  /** 今使っているテンプレートを読み込んだファイルの名前。既定のテンプレートなら undefined */
-  templateFileName: string | undefined;
+  /** 今使っているテンプレートの出どころ。用意したもの（id）か、読み込んだファイル（名前） */
+  templateSource: TemplateSource;
   /** 最後に読み込もうとして失敗したテンプレートとエラー。失敗していなければ null */
   templateRejected: { fileName: string; errors: readonly string[] } | null;
   /** 読み込んだ CSV。読み込む前は null（画面は見本を出す） */
@@ -32,8 +32,10 @@ export type AppState = {
   savedBorderPt: number;
 };
 
+export type TemplateSource = { presetId: string } | { fileName: string };
+
 export type AppAction =
-  | { type: "templateLoaded"; template: Template; fileName: string }
+  | { type: "templateLoaded"; template: Template; source: TemplateSource }
   | { type: "templateRejected"; errors: string[]; fileName: string }
   | { type: "csvLoaded"; csv: LoadedCsv }
   | { type: "csvRejected"; fileName: string; error: string }
@@ -46,15 +48,15 @@ export type AppAction =
   | { type: "borderChanged"; pt: number };
 
 export const initialState: AppState = {
-  template: DEFAULT_TEMPLATE,
-  templateFileName: undefined,
+  template: DEFAULT_PRESET.template,
+  templateSource: { presetId: DEFAULT_PRESET.id },
   templateRejected: null,
   csv: null,
   csvRejected: null,
   columns: {},
   order: null,
   sortColumn: null,
-  savedBorderPt: DEFAULT_TEMPLATE.card.border_pt || DEFAULT_BORDER_PT,
+  savedBorderPt: DEFAULT_PRESET.template.card.border_pt || DEFAULT_BORDER_PT,
 };
 
 /** 並び順の列の見出し（正規化したもの）。この列があれば、読み込んだときにその列で並べる */
@@ -67,13 +69,9 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         template,
-        templateFileName: action.fileName,
+        templateSource: action.source,
         templateRejected: null,
-        // 項目が変わったときだけ列の対応を付け直す（同じなら手で選んだ列を残す）。並び順はそのまま
-        columns:
-          state.csv && !sameFields(state.template.fields, template.fields)
-            ? matchColumns(state.csv.headers, template.fields).columns
-            : state.columns,
+        columns: state.csv ? carryColumns(state, template.fields) : state.columns,
         savedBorderPt: template.card.border_pt || state.savedBorderPt,
       };
     }
@@ -122,15 +120,21 @@ export function appReducer(state: AppState, action: AppAction): AppState {
   }
 }
 
-/** key と label（正規化して比べる）が同じ順に並んでいれば、同じ項目とみなす */
-function sameFields(a: readonly Field[], b: readonly Field[]): boolean {
-  return (
-    a.length === b.length &&
-    a.every(
-      (field, i) =>
-        field.key === b[i]?.key && normalizeLabel(field.label) === normalizeLabel(b[i].label),
-    )
+/**
+ * テンプレートを替えたときの列の対応。同じ key の項目は、今の列をそのまま使う
+ * （「機材名」と「機種名」のように質問の文が違っても、同じ key なら同じ列）。
+ * 今の列がない項目だけ、見出しから自動で選ぶ。並び順はそのまま
+ */
+function carryColumns(state: AppState, fields: readonly Field[]): ColumnAssignments {
+  const auto = state.csv ? matchColumns(state.csv.headers, fields).columns : {};
+  return Object.fromEntries(
+    fields.map(({ key }) => [key, state.columns[key] ?? auto[key] ?? null]),
   );
+}
+
+/** 画面に出すテンプレートの名前。JSON に name がなければ、読み込んだファイルの名前を使う */
+export function templateName(template: Template, source: TemplateSource): string {
+  return template.name ?? ("fileName" in source ? source.fileName : source.presetId);
 }
 
 function sortedBy(csv: LoadedCsv, column: number | null): Pick<AppState, "order" | "sortColumn"> {

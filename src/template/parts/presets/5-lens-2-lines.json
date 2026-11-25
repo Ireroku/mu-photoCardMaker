@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "name": "タイトルとレンズ2行",
+  "page": {
+    "size": "A4",
+    "orientation": "landscape",
+    "margin_mm": 5
+  },
+  "grid": {
+    "columns": 3,
+    "rows": 3
+  },
+  "card": {
+    "border_pt": 1,
+    "padding_mm": 2
+  },
+  "font": "noto-sans-jp",
+  "fields": [
+    {
+      "key": "title",
+      "label": "題名",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "author",
+      "label": "撮影者名",
+      "type": "text",
+      "required": true
+    },
+    {
+      "key": "place",
+      "label": "撮影場所",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "camera",
+      "label": "機種名",
+      "type": "text",
+      "required": false
+    },
+    {
+      "key": "lens",
+      "label": "レンズ名",
+      "type": "text",
+      "required": false
+    }
+  ],
+  "layout": [
+    {
+      "kind": "section",
+      "items": [
+        {
+          "kind": "text",
+          "field": "title",
+          "size_pt": 24,
+          "max_lines": 2,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "kind": "line",
+      "width_percent": 72,
+      "thickness_pt": 1
+    },
+    {
+      "kind": "section",
+      "items": [
+        {
+          "kind": "text",
+          "field": "author",
+          "size_pt": 16,
+          "bold": true
+        },
+        {
+          "kind": "text",
+          "field": "place",
+          "size_pt": 11
+        },
+        {
+          "kind": "text",
+          "field": "camera",
+          "size_pt": 11
+        },
+        {
+          "kind": "text",
+          "field": "lens",
+          "size_pt": 11,
+          "max_lines": 2
+        }
+      ]
+    }
+  ]
+}

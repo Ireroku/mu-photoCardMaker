@@ -6,7 +6,7 @@ import "./App.css";
 import { LoadStep } from "./steps/load/LoadStep";
 import { OrderStep } from "./steps/order/OrderStep";
 import { PrintStep } from "./steps/print/PrintStep";
-import { HandoverSection } from "./steps/handover/HandoverSection";
+import { TemplateStep } from "./steps/template/TemplateStep";
 import { openStep } from "./parts/openStep";
 import { Step } from "./parts/Step";
 import { useCaptionBoard } from "./parts/useCaptionBoard";
@@ -33,6 +33,7 @@ export function App() {
     pageCount,
     preview,
     previewDrop,
+    templateLabel,
   } = useCaptionBoard();
   const { template, csv } = state;
 
@@ -47,11 +48,25 @@ export function App() {
 
       <div className="workspace">
         <div className="steps screen-only">
-          <Step id="step-form" number={1} title="フォームを作る" open={false}>
+          <Step
+            id="step-template"
+            number={1}
+            title="テンプレートを選ぶ"
+            open={csv === null}
+            status={`テンプレート：${templateLabel}`}
+          >
+            <TemplateStep
+              source={state.templateSource}
+              templateRejected={state.templateRejected}
+              dispatch={dispatch}
+            />
+          </Step>
+
+          <Step id="step-form" number={2} title="フォームを作る" open={false}>
             <FormStep
               fields={template.fields}
               finish={{
-                label: "次へ：② 回答を読み込む",
+                label: "次へ：③ 回答を読み込む",
                 onClick: () => openStep("step-load", "[data-csv-button]"),
               }}
             />
@@ -59,7 +74,7 @@ export function App() {
 
           <Step
             id="step-load"
-            number={2}
+            number={3}
             title="回答を読み込む"
             open={!autoComplete}
             done={csvDone && !state.csvRejected}
@@ -81,7 +96,7 @@ export function App() {
 
           <Step
             id="step-order"
-            number={3}
+            number={4}
             title="並べて確認"
             open={csv !== null}
             disabled={csv === null}
@@ -100,9 +115,10 @@ export function App() {
             )}
           </Step>
 
-          <Step id="step-print" number={4} title="印刷" open={csv !== null}>
+          <Step id="step-print" number={5} title="印刷" open={csv !== null}>
             <PrintStep
               template={template}
+              templateLabel={templateLabel}
               isSample={mapped.isSample}
               savedBorderPt={state.savedBorderPt}
               cardCount={cards.captions.length}
@@ -111,13 +127,6 @@ export function App() {
               dispatch={dispatch}
             />
           </Step>
-
-          <HandoverSection
-            template={template}
-            templateFileName={state.templateFileName}
-            templateRejected={state.templateRejected}
-            dispatch={dispatch}
-          />
         </div>
 
         <section
@@ -129,6 +138,7 @@ export function App() {
           <div className="preview-toolbar screen-only">
             <p aria-live="polite">
               {template.page.size} {pageCount} 枚（カード {cards.captions.length} 枚）
+              <span className="preview-template">テンプレート：{templateLabel}</span>
             </p>
             {overflowMessage && (
               <div className="overflow-summary" role="status">

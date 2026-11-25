@@ -1,9 +1,9 @@
-import type { CSSProperties, ReactNode } from "react";
-import { fontFamilyCss } from "../fonts/fonts";
+import type { ReactNode } from "react";
 import type { Template } from "../template/schema";
 import type { CardFit } from "./autoFit";
 import { Card } from "./parts/Card";
-import { cardsPerPage, paginate, sheetGeometry, type Caption } from "./geometry";
+import { cardsPerPage, paginate, type Caption } from "./geometry";
+import { sheetStyle } from "./parts/sheetStyle";
 import "./parts/sheets.css";
 
 type SheetsProps = {
@@ -21,25 +21,12 @@ type SheetsProps = {
 
 /** 印刷するページをすべて並べる。画面のプレビューと印刷で同じものを使う */
 export function Sheets({ template, captions, fits, cardId, badge, mark }: SheetsProps) {
-  const { page, grid, card, layout } = template;
-  const { paper } = sheetGeometry(template);
+  const { page, grid, layout } = template;
   const perPage = cardsPerPage(template);
   const pages = paginate(captions, perPage);
 
-  // 寸法はすべて CSS 変数で sheets.css に渡す
-  const style = {
-    "--paper-width": `${paper.width}mm`,
-    "--paper-height": `${paper.height}mm`,
-    "--page-margin": `${page.margin_mm}mm`,
-    "--grid-columns": grid.columns,
-    "--grid-rows": grid.rows,
-    "--card-border": `${card.border_pt}pt`,
-    "--card-padding": `${card.padding_mm}mm`,
-    fontFamily: fontFamilyCss(template.font),
-  } as CSSProperties;
-
   return (
-    <div className="sheets" style={style}>
+    <div className="sheets" style={sheetStyle(template)}>
       {/* 用紙の向きはテンプレートで変わるので、@page はここで作る。余白は .sheet の padding で取る */}
       <style>{`@page { size: ${page.size} ${page.orientation}; margin: 0; }`}</style>
       {pages.map((captionsOnPage, i) => (

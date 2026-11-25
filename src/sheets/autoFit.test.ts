@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { FIT_SAFETY_MM } from "../settings";
 import { MM_PER_PT } from "../shared/units";
-import { DEFAULT_TEMPLATE } from "../template/default";
+import { DEFAULT_PRESET } from "../template/presets";
 import type { LayoutEntry } from "../template/schema";
 import { fitCards, hasOverflow, textBoxMm, textItems, type TextBox } from "./autoFit";
 
@@ -34,7 +34,7 @@ describe("textBoxMm", () => {
   it("カードの大きさから padding・罫線・余裕を引き、段の高さは区切り線を除いて等分する", () => {
     // A4 横・余白 5 mm・3 列 3 行 → 287 / 3 × 200 / 3 mm。padding 2 mm、罫線 1 pt
     const inset = 4 + MM_PER_PT * 2 + FIT_SAFETY_MM;
-    const box = textBoxMm(DEFAULT_TEMPLATE);
+    const box = textBoxMm(DEFAULT_PRESET.template);
     expect(box.width).toBeCloseTo(287 / 3 - inset);
     // 段 2 つと、1 pt の区切り線 1 本
     expect(box.sectionHeight).toBeCloseTo((200 / 3 - inset - MM_PER_PT) / 2);

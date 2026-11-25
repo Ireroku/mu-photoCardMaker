@@ -10,7 +10,7 @@ import { hasOverflow, textItems } from "../sheets/autoFit";
 import { pageCount as countPages, sheetGeometry } from "../sheets/geometry";
 import { useCardFits } from "../sheets/useCardFits";
 import { mapCards, orderCards } from "../state/derive";
-import { appReducer, initialState } from "../state/state";
+import { appReducer, initialState, templateName } from "../state/state";
 import { usePreviewScale } from "./usePreviewScale";
 
 export function useCaptionBoard() {
@@ -81,14 +81,14 @@ export function useCaptionBoard() {
     (f) => f.required && (columns[f.key] ?? null) === null,
   );
   const csvDone = csv !== null && missingRequired.length === 0;
-  // 手順②を自動で閉じるかは、自動の対応付けの結果と警告で決める。
+  // 手順③を自動で閉じるかは、自動の対応付けの結果と警告で決める。
   // 手で列を選んだ途端に閉じて、操作中の欄が消えないようにするため
   const autoComplete =
     autoMapping !== null &&
     issues.length === 0 &&
     template.fields.every((f) => !f.required || autoMapping.columns[f.key] !== null);
 
-  /** 閉じた手順②にも出す 1 行の状態 */
+  /** 閉じた手順③にも出す 1 行の状態 */
   let loadStatus: string | undefined;
   if (state.csvRejected) loadStatus = `「${state.csvRejected.fileName}」を読み込めませんでした`;
   else if (csv && !csvDone) loadStatus = "必須の質問に当たる列を選んでください";
@@ -99,6 +99,8 @@ export function useCaptionBoard() {
 
   return {
     state,
+    /** 画面に出す、今のテンプレートの名前 */
+    templateLabel: templateName(template, state.templateSource),
     dispatch,
     mapped,
     cards,
