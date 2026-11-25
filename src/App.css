@@ -174,6 +174,25 @@ select {
   content: "閉じる ▴";
 }
 
+/* 開け閉めを滑らかにする。対応していないブラウザでは、これまでどおりすぐに開け閉めする */
+@media (prefers-reduced-motion: no-preference) {
+  .step {
+    interpolate-size: allow-keywords;
+  }
+
+  .step::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 0.25s ease,
+      content-visibility 0.25s allow-discrete;
+  }
+
+  .step[open]::details-content {
+    block-size: auto;
+  }
+}
+
 .step-number {
   display: grid;
   flex: none;

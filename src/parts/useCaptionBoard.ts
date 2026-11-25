@@ -1,6 +1,6 @@
 // 画面全体の状態と、そこから求めるカード・文字の大きさ・手順の状態をまとめる。App.tsx はここが返すものを並べるだけ。
 
-import { useMemo, useReducer, useRef } from "react";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 import { csvIssues } from "../csv/csvIssues";
 import { loadCsvFile } from "../csv/loadCsvFile";
 import { matchColumns } from "../csv/match";
@@ -58,6 +58,15 @@ export function useCaptionBoard() {
   const pageCount = countPages(cards.captions.length, template);
   usePreviewScale(preview, geometry.paper.width);
   usePreventStrayFileDrop();
+
+  // 読み込んだ CSV と並び順は保存しないので、閉じる前にブラウザの確認を出す
+  const hasCsv = csv !== null;
+  useEffect(() => {
+    if (!hasCsv) return;
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [hasCsv]);
 
   /** CSV を読み込む。確かめに通らなかったときは、今の CSV と並び順をそのまま残す */
   async function loadCsv(files: readonly File[]) {
