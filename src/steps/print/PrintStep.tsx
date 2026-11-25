@@ -14,7 +14,7 @@ type PrintStepProps = {
   isSample: boolean;
   savedBorderPt: number;
   cardCount: number;
-  /** 文字が収まらない札の数 */
+  /** 文字が収まらないカードの数 */
   overflowCount: number;
   /** 文字の自動縮小が今の設定で測り終わっている */
   fitsReady: boolean;

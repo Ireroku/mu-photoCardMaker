@@ -23,7 +23,6 @@ describe("matchColumns", () => {
     );
     expect(mapping).toEqual({
       columns: { title: 1, author: 2, place: 3, equipment: 4 },
-      unmatchedColumns: [],
       ignoredColumns: [0],
       duplicateColumns: [],
     });
@@ -59,17 +58,15 @@ describe("matchColumns", () => {
     expect(mapping.columns).toEqual({ title: 0, author: 1 });
   });
 
-  it("見つからないフィールドは null、使わない列は unmatchedColumns に入る", () => {
+  it("見つからないフィールドは null", () => {
     const mapping = matchColumns(["題名", "感想"], FIELDS);
     expect(mapping.columns).toEqual({ title: 0, author: null, place: null, equipment: null });
-    expect(mapping.unmatchedColumns).toEqual([1]);
   });
 
   it("同じ見出しが複数あれば先の列を使い、後の列を報告する", () => {
     const mapping = matchColumns(["題名", "撮影者名", "題名 "], FIELDS);
     expect(mapping.columns.title).toBe(0);
     expect(mapping.duplicateColumns).toEqual([2]);
-    expect(mapping.unmatchedColumns).toEqual([]);
   });
 
   it("同じ label のフィールドが複数あれば、先のフィールドだけが列を得る", () => {
@@ -86,13 +83,11 @@ describe("matchColumns", () => {
   it("空の見出しは空の label と対応付けない", () => {
     const mapping = matchColumns([""], [{ key: "empty", label: " " }]);
     expect(mapping.columns).toEqual({ empty: null });
-    expect(mapping.unmatchedColumns).toEqual([0]);
   });
 
-  it("フィールドがなければすべて unmatched", () => {
+  it("フィールドがなければ何も対応付けない", () => {
     expect(matchColumns(["題名"], [])).toEqual({
       columns: {},
-      unmatchedColumns: [0],
       ignoredColumns: [],
       duplicateColumns: [],
     });

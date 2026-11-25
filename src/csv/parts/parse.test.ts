@@ -90,7 +90,6 @@ describe("fixtures/anime-spots.csv", () => {
     expect(csv.rows).toHaveLength(30);
     const mapping = matchColumns(csv.headers, FIELDS);
     expect(mapping.columns).toEqual({ title: 1, author: 2, place: 3, camera: 4 });
-    expect(mapping.unmatchedColumns).toEqual([]);
     const { captions, skippedRows } = applyMapping(csv, mapping.columns);
     expect(skippedRows).toEqual([]);
     expect(captions[3]?.title).toBe("夕暮れ, 坂道の途中で");

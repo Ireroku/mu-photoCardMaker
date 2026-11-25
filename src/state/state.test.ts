@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { LoadedCsv } from "../csv/loadCsvFile";
-import { deriveCards } from "./derive";
+import { mapCards, orderCards } from "./derive";
 import { adjustTemplate, appReducer, initialState, type AppAction, type AppState } from "./state";
 
 const CSV: LoadedCsv = {
@@ -18,9 +18,14 @@ const CSV: LoadedCsv = {
 };
 
 const run = (...actions: AppAction[]): AppState => actions.reduce(appReducer, initialState);
+function deriveCards(state: Pick<AppState, "csv" | "columns" | "order">) {
+  const mapped = mapCards(state.csv, state.columns);
+  return { ...mapped, ...orderCards(mapped, state.order) };
+}
+
 const titles = (state: AppState) => deriveCards(state).captions.map((c) => c.title);
 
-describe("appReducer と deriveCards", () => {
+describe("appReducer と、状態から求めるカード", () => {
   it("CSV を読む前は見本を出す", () => {
     expect(deriveCards(initialState).isSample).toBe(true);
   });
@@ -115,7 +120,7 @@ describe("appReducer と deriveCards", () => {
     expect(titles(run({ type: "csvLoaded", csv }))).toEqual(["B", "A"]);
   });
 
-  it("adjustTemplate は、札が小さくなりすぎる値なら null", () => {
+  it("adjustTemplate は、カードが小さくなりすぎる値なら null", () => {
     // 20 行・padding 3 mm なら、余白 50 mm でカードの高さ（5.5 mm）が padding と罫線に足りない
     const dense = {
       ...initialState.template,

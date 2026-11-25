@@ -1,4 +1,4 @@
-// 画面全体の状態と、そこから求める札・文字の大きさ・手順の状態をまとめる。App.tsx はここが返すものを並べるだけ。
+// 画面全体の状態と、そこから求めるカード・文字の大きさ・手順の状態をまとめる。App.tsx はここが返すものを並べるだけ。
 
 import { useMemo, useReducer, useRef } from "react";
 import { csvIssues } from "../csv/csvIssues";
@@ -18,7 +18,7 @@ export function useCaptionBoard() {
   const { template, csv, columns, order } = state;
   const preview = useRef<HTMLDivElement>(null);
 
-  // 列の対応と並び順を分けて求める。文字の大きさは並べる前の札で測るので、並べ替えても測り直さない
+  // 列の対応と並び順を分けて求める。文字の大きさは並べる前のカードで測るので、並べ替えても測り直さない
   const mapped = useMemo(() => mapCards(csv, columns), [csv, columns]);
   const cards = useMemo(() => orderCards(mapped, order), [mapped, order]);
   const cardFits = useCardFits(template, mapped.captions);
@@ -66,7 +66,7 @@ export function useCaptionBoard() {
   /** 閉じた手順②にも出す 1 行の状態 */
   let loadStatus: string | undefined;
   if (state.csvRejected) loadStatus = `「${state.csvRejected.fileName}」を読み込めませんでした`;
-  else if (csv && !csvDone) loadStatus = "必須の項目に当たる列を選んでください";
+  else if (csv && !csvDone) loadStatus = "必須の質問に当たる列を選んでください";
   else if (csv) {
     loadStatus = `「${csv.fileName}」 ${cards.captions.length} 枚`;
     if (issues.length > 0) loadStatus += `・確かめてほしいことが ${issues.length} 件`;
@@ -80,9 +80,9 @@ export function useCaptionBoard() {
     cardFits,
     fits,
     overflowCards,
-    /** 「収まりません」の一覧にリンクで出す札の番号 */
+    /** 「収まりません」の一覧にリンクで出すカードの番号 */
     overflowLinks: overflowList.slice(0, MAX_OVERFLOW_LINKS),
-    /** リンクにせず件数だけ出す札の数 */
+    /** リンクにせず件数だけ出すカードの数 */
     moreOverflowCount: Math.max(0, overflowList.length - MAX_OVERFLOW_LINKS),
     autoMapping,
     issues,

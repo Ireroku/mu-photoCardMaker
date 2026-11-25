@@ -1,5 +1,6 @@
 import type { LoadedCsv } from "./loadCsvFile";
 import type { ColumnMapping } from "./match";
+import { REDOWNLOAD_ADVICE } from "./parts/check";
 
 /**
  * 読み込めたが確かめてほしいこと（文字化けの疑い、引用符の閉じ忘れ、同じ見出しの列など）。
@@ -8,10 +9,7 @@ import type { ColumnMapping } from "./match";
 export function csvIssues(csv: LoadedCsv, mapping: ColumnMapping): string[] {
   const issues: string[] = [];
   if (csv.suspicious) {
-    issues.push(
-      "文字コードを判別できず、文字化けしているかもしれません。Google フォームから CSV をダウンロードし直し、" +
-        "Excel などで開いて保存し直さずに、そのまま読み込んでください。",
-    );
+    issues.push(`文字コードを判別できず、文字化けしているかもしれません。${REDOWNLOAD_ADVICE}`);
   }
   issues.push(...csv.warnings);
   const duplicateHeaders = new Set(mapping.duplicateColumns.map((i) => csv.headers[i]!.trim()));

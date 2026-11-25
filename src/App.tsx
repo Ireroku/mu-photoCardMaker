@@ -1,4 +1,4 @@
-// CSS の重なり順を変えないよう、sheets・手順①・App.css・手順②〜の順に読み込む（同じ強さの指定は後のものが勝つ）
+// CSS は App.css を手順ごとの CSS より先に読み込む。同じ強さの指定（例：order.css の .order-buttons button）で手順側を勝たせるため
 import { cardId } from "./shared/cardId";
 import { Sheets } from "./sheets/Sheets";
 import { FormStep } from "./steps/form/FormStep";

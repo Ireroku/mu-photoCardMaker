@@ -11,8 +11,6 @@ export type ColumnAssignments = Record<string, number | null>;
 
 export type ColumnMapping = {
   columns: ColumnAssignments;
-  /** どのフィールドにも対応しなかった列の番号（無視した列と重複した列は含まない） */
-  unmatchedColumns: number[];
   /** Google フォームが自動で付ける列として、最初から無視した列の番号 */
   ignoredColumns: number[];
   /**
@@ -45,7 +43,6 @@ export function matchColumns(
   }
 
   const columns: ColumnAssignments = Object.fromEntries(fields.map((field) => [field.key, null]));
-  const unmatchedColumns: number[] = [];
   const ignoredColumns: number[] = [];
   const duplicateColumns: number[] = [];
 
@@ -57,12 +54,10 @@ export function matchColumns(
       else duplicateColumns.push(index);
     } else if (AUTO_GENERATED_HEADERS.has(label)) {
       ignoredColumns.push(index);
-    } else {
-      unmatchedColumns.push(index);
     }
   });
 
-  return { columns, unmatchedColumns, ignoredColumns, duplicateColumns };
+  return { columns, ignoredColumns, duplicateColumns };
 }
 
 /**

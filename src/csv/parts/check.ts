@@ -20,6 +20,10 @@ export function checkCsvFile(file: { name: string; size: number }): string | nul
   return null;
 }
 
+/** 文字化けしたときの直し方。読み込めたときの警告と、断るときのエラーの両方で使う */
+export const REDOWNLOAD_ADVICE =
+  "Google フォームから CSV をダウンロードし直し、Excel などで開いて保存し直さずに、そのまま読み込んでください。";
+
 /**
  * 読み込んだ中身を確かめる。文字化けの疑いがあり、しかもどの見出しも項目に当たらないときは、
  * 違うファイルか、読めない文字コードとみなして断る
@@ -28,8 +32,5 @@ export function checkParsedCsv(csv: ParsedCsv, fields: readonly FieldLike[]): st
   if (!csv.suspicious) return null;
   const { columns } = matchColumns(csv.headers, fields);
   if (Object.values(columns).some((column) => column !== null)) return null;
-  return (
-    "文字化けしていて、見出しを読み取れませんでした。Google フォームから CSV をダウンロードし直し、" +
-    "Excel などで開いて保存し直さずに、そのまま読み込んでください。"
-  );
+  return `文字化けしていて、見出しを読み取れませんでした。${REDOWNLOAD_ADVICE}`;
 }

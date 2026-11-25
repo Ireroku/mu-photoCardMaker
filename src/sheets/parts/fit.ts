@@ -7,7 +7,7 @@ import { ABSOLUTE_MIN_PT, DEFAULT_MIN_RATIO, DEFAULT_STEP_PT } from "../../setti
  * 最小の大きさを決める。
  *
  * - min_size_pt が書いてあれば、それを使う（ただし size_pt を超えない）
- * - なければ size_pt の 60% を 0.5 pt 単位に丸めた値。ただし 6 pt を下回らず、size_pt を超えない
+ * - なければ size_pt × DEFAULT_MIN_RATIO を 0.5 pt 単位に丸めた値。ただし 6 pt を下回らず、size_pt を超えない
  *   例：24 pt → 14.5 pt、20 pt → 12 pt、11 pt → 6.5 pt、8 pt → 6 pt、5 pt → 5 pt
  */
 export function resolveMinPt(item: { size_pt: number; min_size_pt?: number }): number {

@@ -6,7 +6,6 @@ import { applyMapping, type ColumnAssignments } from "../csv/match";
 import type { Caption } from "../sheets/geometry";
 import { identityOrder } from "./parts/order";
 import { SAMPLE_CAPTIONS } from "./parts/sampleCaptions";
-import type { AppState } from "./state";
 
 export type MappedCards = {
   /** CSV を読み込む前で、見本を出している */
@@ -47,10 +46,4 @@ export function orderCards(mapped: MappedCards, order: readonly number[] | null)
   const rows = (order ?? mapped.rowIndexes).filter((row) => positionOfRow.has(row));
   const positions = rows.map((row) => positionOfRow.get(row)!);
   return { captions: positions.map((i) => mapped.captions[i]!), rows, positions };
-}
-
-/** mapCards と orderCards をまとめて行う（テスト用） */
-export function deriveCards(state: Pick<AppState, "csv" | "columns" | "order">) {
-  const mapped = mapCards(state.csv, state.columns);
-  return { ...mapped, ...orderCards(mapped, state.order) };
 }

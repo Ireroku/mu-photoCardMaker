@@ -64,7 +64,7 @@ const textItemSchema = z.strictObject({
   kind: z.literal("text"),
   field: z.string().min(1),
   size_pt: positiveUpTo(200),
-  /** 長くて収まらないとき、この大きさまで縮める。省略時は size_pt の 60%（sheets/parts/fit.ts の resolveMinPt） */
+  /** 長くて収まらないとき、この大きさまで縮める。省略時は settings.ts の DEFAULT_MIN_RATIO から求める（sheets/parts/fit.ts の resolveMinPt） */
   min_size_pt: positiveUpTo(200).optional(),
   bold: z.boolean().optional(),
 });

@@ -6,7 +6,7 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 
 ## 何を作っているか
 
-キャプションボード作成ツール。写真展示会で作品ごとに貼るキャプション（題名・撮影者名などを書いた小さな札）を、A4 に敷き詰めて印刷できるページにする静的 Web アプリ。
+キャプションボード作成ツール。写真展示会で作品ごとに貼るキャプション（題名・撮影者名などを書いた小さなカード）を、A4 に敷き詰めて印刷できるページにする静的 Web アプリ。
 
 使う流れは次のとおり。
 
@@ -78,8 +78,8 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 | 使い方、テンプレート JSON の仕様、公開の手順 | [README.md](./README.md) |
 | 値を変えたい（文字の縮め方、余白や罫線の範囲、ファイル名、CSV の大きさの上限など） | まず [src/settings.ts](./src/settings.ts) |
 | 画面全体の組み立て | [src/App.tsx](./src/App.tsx)（画面）、[src/parts/useCaptionBoard.ts](./src/parts/useCaptionBoard.ts)（状態と、そこから求めるもの） |
-| 手順①〜④と「来年に引き継ぐ」の画面 | [src/steps/](./src/steps/) |
-| 画面の状態（テンプレート・CSV・列の対応・並び順）と、そこから求める札 | [src/state/state.ts](./src/state/state.ts)、[src/state/derive.ts](./src/state/derive.ts) |
+| 手順①〜④と「設定ファイル」の画面 | [src/steps/](./src/steps/) |
+| 画面の状態（テンプレート・CSV・列の対応・並び順）と、そこから求めるカード | [src/state/state.ts](./src/state/state.ts)、[src/state/derive.ts](./src/state/derive.ts) |
 | CSV の読み込みと列の対応付け（同じ見出しの列は左から空でない値を使う） | [src/csv/](./src/csv/) |
 | 文字の自動縮小（計算は `fit.ts`・`autoFit.ts`、測るのは `measure.ts`・`useCardFits.ts`） | [src/sheets/](./src/sheets/) |
 | テンプレート JSON の型と検証 | [src/template/schema.ts](./src/template/schema.ts) |
@@ -89,11 +89,11 @@ AIエージェント向けの入口。目的・方針・規約と、どこに何
 
 ```
 src/
-  App.tsx     画面全体（手順①〜④と来年に引き継ぐを並べる）。App.css は画面全体の配置とどの手順でも使う見た目
+  App.tsx     画面全体（手順①〜④と設定ファイルを並べる）。App.css は画面全体の配置とどの手順でも使う見た目
   settings.ts 使う人の都合で変えたくなる値の一覧
   parts/      App だけが使う部品（手順の枠、プレビューの縮小、画面全体の状態をまとめるフック）
-  steps/      手順ごとの画面。form/（①フォームを作る）、load/（②回答を読み込む）、order/（③並べて確認）、print/（④印刷）、handover/（来年に引き継ぐ）
-  state/      画面の状態（state.ts）、状態から札を求める計算（derive.ts）、並び順（parts/order.ts）
+  steps/      手順ごとの画面。form/（①フォームを作る）、load/（②回答を読み込む）、order/（③並べて確認）、print/（④印刷）、handover/（設定ファイル）
+  state/      画面の状態（state.ts）、状態からカードを求める計算（derive.ts）、並び順（parts/order.ts）
   csv/        CSV の読み込み（loadCsvFile.ts）と列の対応付け（match.ts）、読み込んだ CSV の警告。文字コードの判別・パース・確かめは parts/、テスト用の fixtures/
   sheets/     印刷するページとカード、印刷用 CSS、文字の自動縮小（autoFit.ts、parts/fit.ts、parts/measure.ts）
   template/   テンプレート JSON の型と検証（zod）、既定のテンプレート（parts/default.json）

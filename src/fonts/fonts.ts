@@ -16,15 +16,13 @@ import "@fontsource/zen-maru-gothic/400.css";
 import "@fontsource/zen-maru-gothic/700.css";
 
 export type FontInfo = {
-  /** 画面に出す名前 */
-  label: string;
   /** CSS の font-family。@fontsource の CSS が定義する名前と同じにする */
   family: string;
 };
 
 export const FONTS = {
-  "noto-sans-jp": { label: "Noto Sans JP", family: "'Noto Sans JP'" },
-  "zen-maru-gothic": { label: "Zen Maru Gothic", family: "'Zen Maru Gothic'" },
+  "noto-sans-jp": { family: "'Noto Sans JP'" },
+  "zen-maru-gothic": { family: "'Zen Maru Gothic'" },
 } as const satisfies Record<string, FontInfo>;
 
 export type FontId = keyof typeof FONTS;

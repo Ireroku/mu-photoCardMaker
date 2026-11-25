@@ -1,4 +1,4 @@
-// 手順②の、テンプレートの項目と CSV の列の対応の表。
+// 手順②の、フォームの質問と CSV の列の対応の表。
 
 import { useId, useState, type Dispatch } from "react";
 import type { LoadedCsv } from "../../../csv/loadCsvFile";
@@ -31,7 +31,7 @@ export function ColumnMapping({ csv, fields, columns, auto, dispatch }: ColumnMa
   if (unmatched.length === 0 && !expanded) {
     return (
       <p className="mapping-summary">
-        <span>すべての項目に列が対応しました。</span>
+        <span>すべての質問に列が対応しました。</span>
         <button type="button" className="link" onClick={() => setExpandedFor(csv)}>
           対応を確認
         </button>
@@ -47,13 +47,13 @@ export function ColumnMapping({ csv, fields, columns, auto, dispatch }: ColumnMa
     <div className="mapping">
       <p>
         {expanded
-          ? "テンプレートの項目と、CSV の列の対応です。違っていたら選び直してください。"
-          : "次の項目に当たる列が見つかりませんでした。CSV の列から選んでください。"}
+          ? "フォームの質問と、CSV の列の対応です。違っていたら選び直してください。"
+          : "次の質問に当たる列が見つかりませんでした。CSV の列から選んでください。"}
       </p>
       <table>
         <thead>
           <tr>
-            <th scope="col">項目</th>
+            <th scope="col">質問</th>
             <th scope="col">CSV の列</th>
           </tr>
         </thead>
@@ -133,7 +133,7 @@ function MappingRow({
         </select>
         {missing && (
           <p className="field-error" id={`${id}-missing`}>
-            必須の項目です。列を選ばないと、すべてのカードでこの項目が空になります。
+            必須の質問です。列を選ばないと、すべてのカードでここが空になります。
           </p>
         )}
       </td>

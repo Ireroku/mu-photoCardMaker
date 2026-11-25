@@ -1,4 +1,4 @@
-// 手順③：札の並び順（展示の順）を決める。
+// 手順③：カードの展示順を決める。
 // 一覧の行を、つまみのドラッグか「先頭へ」「上へ」「下へ」「末尾へ」のボタンで動かす。
 // 数字の入った列で一度に並べ替えることもできる。
 
@@ -20,7 +20,7 @@ type OrderStepProps = {
   /** captions のそれぞれの、CSV の行の番号 */
   rows: readonly number[];
   sortColumn: number | null;
-  /** 文字が収まらない札の番号（0 始まり） */
+  /** 文字が収まらないカードの番号（0 始まり） */
   overflowCards: ReadonlySet<number>;
   dispatch: Dispatch<AppAction>;
 };
@@ -50,7 +50,7 @@ export function OrderStep(props: OrderStepProps) {
   const announceTimer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(announceTimer.current), []);
 
-  // 動かしたあと、同じ札の同じボタンにフォーカスを戻す（行が入れ替わるとフォーカスが外れることがあるため）
+  // 動かしたあと、同じカードの同じボタンにフォーカスを戻す（行が入れ替わるとフォーカスが外れることがあるため）
   const pendingFocus = useRef<{ row: number; direction: Direction } | null>(null);
   useLayoutEffect(() => {
     const request = pendingFocus.current;

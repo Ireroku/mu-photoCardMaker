@@ -12,6 +12,8 @@
   --ui-error-text: #8a1c12;
   --ui-warning-bg: #fff6e0;
   --ui-warning-text: #6b4a00;
+  /* 上に貼り付くプレビューの見出しの高さ。リンクで飛んだ先が見出しに隠れないよう、この分だけ空ける */
+  --sticky-toolbar-space: 9rem;
   /* 暗い配色にはまだ対応していないので、明るい配色に固定する */
   color-scheme: light;
   font-family: system-ui, sans-serif;
@@ -22,8 +24,7 @@
 /* ページが増えてスクロールバーが出ても幅が変わらず、プレビューの縮小の倍率が揺れないようにする */
 html {
   scrollbar-gutter: stable;
-  /* 「収まりません」の一覧から札へ飛んだとき、上に貼り付いたプレビューの見出しに隠れないようにする */
-  scroll-padding-block-start: 9rem;
+  scroll-padding-block-start: var(--sticky-toolbar-space);
 }
 
 body {
@@ -31,13 +32,13 @@ body {
   background: var(--ui-surface);
 }
 
-/* ボタンと入力欄の共通の見た目（フォームの作り方の手順の中は steps/form/parts/form.css が決める） */
+/* ボタンと入力欄の共通の見た目 */
 :where(.app-header, .steps, .preview-pane, .print-dialog) :where(button, select, input) {
   font: inherit;
   color: inherit;
 }
 
-:where(.steps, .print-dialog) button:not(.link, .tutorial *) {
+:where(.steps, .print-dialog) button:not(.link) {
   min-block-size: 2.25rem;
   padding: 0.3rem 1rem;
   cursor: pointer;
@@ -53,7 +54,7 @@ body {
   border-color: var(--ui-accent);
 }
 
-:where(.steps, .print-dialog) button[aria-disabled="true"] {
+:where(.steps, .print-dialog) button:is(:disabled, [aria-disabled="true"]) {
   cursor: not-allowed;
   opacity: 0.4;
 }
@@ -79,6 +80,19 @@ select {
   border-radius: 6px;
 }
 
+/* 画面には出さず、読み上げだけに使う文 */
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .note {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
@@ -94,12 +108,6 @@ select {
 .app-header h1 {
   margin: 0;
   font-size: 1.125rem;
-}
-
-.app-header p {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--ui-muted);
 }
 
 /* 手順とプレビューの 2 段組み。幅が狭いときは縦に並べる */
@@ -119,7 +127,7 @@ select {
     inset-block-start: 0;
     block-size: 100dvh;
     overflow-y: auto;
-    scroll-padding-block-start: 9rem;
+    scroll-padding-block-start: var(--sticky-toolbar-space);
   }
 
   /* 2 段組みのときは、プレビューの中だけがスクロールするので、ページ側の余白は要らない */
@@ -257,11 +265,6 @@ select {
   color: var(--ui-error-text);
 }
 
-:where(.steps, .print-dialog) button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
 /* プレビュー */
 .preview-pane {
   box-sizing: border-box;
@@ -314,7 +317,7 @@ select {
   margin: 8px 16px 0;
   padding: 4px 12px;
   font-weight: 700;
-  color: #6b4a00;
+  color: var(--ui-warning-text);
   text-align: center;
   background: #ffe9a8;
   border-radius: 6px;
@@ -324,7 +327,7 @@ select {
   padding: 16px;
 }
 
-/* 見本のあいだは札を薄くし、本物でないことを見た目で示す（画面だけ） */
+/* 見本のあいだはカードを薄くし、本物でないことを見た目で示す（画面だけ） */
 @media screen {
   .preview[data-sample] .card > :not(.card-badge) {
     opacity: 0.45;
