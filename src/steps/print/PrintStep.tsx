@@ -110,10 +110,6 @@ export function PrintStep(props: PrintStepProps) {
           <button type="button" onClick={() => saveTemplateFile(template, templateLabel)}>
             この設定をテンプレート JSON として保存
           </button>
-          <p className="note">
-            保存したファイルは、手順①の「テンプレート JSON
-            を読み込む」で次から使えます。質問・文字の大きさ・余白・切り取り線が入ります。
-          </p>
         </div>
       </details>
 

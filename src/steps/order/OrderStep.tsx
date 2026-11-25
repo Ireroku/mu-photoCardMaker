@@ -5,7 +5,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type Dispatch } from "react";
 import type { LoadedCsv } from "../../csv/loadCsvFile";
 import { laterDuplicateColumns } from "../../csv/match";
-import { ANNOUNCE_DELAY_MS, ORDER_HEADER } from "../../settings";
+import { ANNOUNCE_DELAY_MS } from "../../settings";
 import { cardId } from "../../shared/cardId";
 import type { Caption } from "../../sheets/geometry";
 import type { AppAction } from "../../state/state";
@@ -130,10 +130,7 @@ export function OrderStep(props: OrderStepProps) {
           )}
         </select>
       </div>
-      <p className="note">
-        数字の入った列（「{ORDER_HEADER}
-        」など）を選ぶと、小さい順に並べます。数字でない値や空欄のカードは最後に回ります。並べたあと、下の一覧で手で動かすこともできます。
-      </p>
+      <p className="note">数字の小さい順に並べます。下の一覧で手で動かすこともできます。</p>
 
       <ol
         className="order-list"

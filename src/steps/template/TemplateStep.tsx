@@ -50,9 +50,7 @@ export function TemplateStep({ source, templateRejected, dispatch }: TemplateSte
           onClick={() => fileInput.current?.click()}
         >
           <span className="template-name">テンプレート JSON を読み込む</span>
-          <span className="template-fields">
-            {loadedFile ? `「${loadedFile}」を使っています` : "手順⑤で保存したファイルを選ぶ"}
-          </span>
+          {loadedFile && <span className="template-fields">「{loadedFile}」を使っています</span>}
         </button>
         <input
           ref={fileInput}
@@ -65,9 +63,6 @@ export function TemplateStep({ source, templateRejected, dispatch }: TemplateSte
           }}
         />
       </div>
-      <p className="note">
-        あとから選び直せます。選び直すと、手順⑤で変えた余白と切り取り線は、そのテンプレートの値に戻ります。
-      </p>
       {templateRejected && (
         <div className="message error" role="alert">
           <p>
